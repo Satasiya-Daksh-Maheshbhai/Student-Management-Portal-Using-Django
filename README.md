@@ -55,3 +55,8 @@ This project allows **admins** to manage students efficiently and provides **stu
 <img width="1887" height="900" alt="image" src="https://github.com/user-attachments/assets/38a6707f-e73f-4f1e-ae65-f1270a0b7dfa" />
 <img width="1881" height="916" alt="image" src="https://github.com/user-attachments/assets/af474f82-5188-49a3-a24c-ad09de42e490" />
 <img width="1882" height="910" alt="image" src="https://github.com/user-attachments/assets/dc854d70-d1af-4b80-8fef-6cbf794d3f97" />
+<img width="1883" height="892" alt="image" src="https://github.com/user-attachments/assets/f88e8760-cb10-40b4-8c09-b00da1bd3db6" />
+<img width="1887" height="907" alt="image" src="https://github.com/user-attachments/assets/9b2b8b15-a53e-43b0-af6a-6da074691d35" />
+<img width="1887" height="908" alt="image" src="https://github.com/user-attachments/assets/9cad3258-9d91-49ac-8611-a1a63a4d151f" />
+<img width="7956" height="2672" alt="127 0 0 1_8000_student-dashboard_" src="https://github.com/user-attachments/assets/c2676636-d8dd-442a-8bde-22517485d161" />
+
