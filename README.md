@@ -33,20 +33,20 @@ This project allows **admins** to manage students efficiently and provides **stu
    cd student-management-portal
 2. Activate virtual environment:
    ```bash
-   **python -m venv venv**
+   python -m venv venv
 3. Install dependencies:
    ```bash
-   **pip install -r requirements.txt**
+   pip install -r requirements.txt
 4. Generate tables in database (Django):
    ```bash
-   **python manage.py makemigrations**
-   **python manage.py migrate**
+   python manage.py makemigrations
+   python manage.py migrate
 5. Create Admin username and password:
    ```bash
-   **python manage.py createsuperuser**
+   python manage.py createsuperuser
 6. Run the Whole Project:
    ```bash
-   **python manage.py runserver**
+   python manage.py runserver
 7. To see the Website go to chrome and search the URL:
    ```bash
    http://127.0.0.1:8000/
