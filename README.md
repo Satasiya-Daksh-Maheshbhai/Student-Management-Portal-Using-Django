@@ -61,3 +61,5 @@ python manage.py runserver
 Open in Browser
 
 http://127.0.0.1:8000/   
+<img width="751" height="900" alt="image" src="https://github.com/user-attachments/assets/a7710503-74e9-4cad-8451-a0a0da07c4b4" />
+
