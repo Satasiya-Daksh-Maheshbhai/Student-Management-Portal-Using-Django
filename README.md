@@ -60,3 +60,9 @@ This project allows **admins** to manage students efficiently and provides **stu
 <img width="1887" height="908" alt="image" src="https://github.com/user-attachments/assets/9cad3258-9d91-49ac-8611-a1a63a4d151f" />
 <img width="7956" height="2672" alt="127 0 0 1_8000_student-dashboard_" src="https://github.com/user-attachments/assets/c2676636-d8dd-442a-8bde-22517485d161" />
 
+# 👨‍💻 Author
+
+## Daksh Satasiya
+linkedin link :-
+🔗 https://linkedin.com/in/daksh-satasiya-01ba92380
+
