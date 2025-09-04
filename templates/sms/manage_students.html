@@ -1,0 +1,524 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Manage Students -
+Admin Panel{% endblock %} {% block extra_css %}
+<style>
+  body {
+    background: #f8f9fa;
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+</style>
+{% endblock %} {% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+  <div class="sidebar-header">
+    <i
+      class="fas fa-crown"
+      style="color: #f39c12; font-size: 2rem; margin-bottom: 10px"
+    ></i>
+    <h3>Admin Control Center</h3>
+    <p>Manage Students</p>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li>
+      <a href="{% url 'sms:admin_dashboard' %}">
+        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_students' %}" class="active">
+        <i class="fas fa-users"></i> Manage Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:course_analysis' %}">
+        <i class="fas fa-chart-line"></i> Course Analysis
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:performance_trends' %}">
+        <i class="fas fa-chart-area"></i> Performance Trends
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:import_csv_data' %}">
+        <i class="fas fa-file-import"></i> Import CSV Data
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:at_risk_students' %}">
+        <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_grades' %}">
+        <i class="fas fa-user-check"></i> Manage Grades
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:admin_panel' %}">
+        <i class="fas fa-cog"></i> Admin Panel
+      </a>
+    </li>
+  </ul>
+
+  <div style="position: absolute; bottom: 20px; left: 20px; right: 20px">
+    <a
+      href="{% url 'sms:logout' %}"
+      style="color: #e74c3c; text-decoration: none"
+    >
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <!-- Top Navbar -->
+  <div class="top-navbar">
+    <h1><i class="fas fa-users"></i> Manage Students</h1>
+    <div class="user-info">
+      <a href="{% url 'sms:add_student' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New Student
+      </a>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+    <div
+      class="alert alert-{{ message.tags }} alert-dismissible fade show"
+      role="alert"
+    >
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Students Table -->
+  <div class="form-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3><i class="fas fa-table"></i> Students List</h3>
+      <div class="d-flex gap-2">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search students..."
+          id="searchInput"
+          style="width: 300px"
+        />
+        <select class="form-select" id="departmentFilter" style="width: 200px">
+          <option value="">All Departments</option>
+          {% for dept in departments %}
+          <option value="{{ dept.name }}">{{ dept.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover" id="studentsTable">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Year</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+          <tr>
+            <td><strong>{{ student.student_id }}</strong></td>
+            <td>{{ student.user.get_full_name }}</td>
+            <td>{{ student.user.email }}</td>
+            <td>{{ student.department.name }}</td>
+            <td>Year {{ student.year }}</td>
+            <td>{{ student.user.phone|default:"N/A" }}</td>
+            <td>
+              {% if student.is_active %}
+              <span class="badge bg-success">Active</span>
+              {% else %}
+              <span class="badge bg-danger">Inactive</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="btn-group" role="group">
+                <a
+                  href="{% url 'sms:edit_student' student.id %}"
+                  class="btn btn-sm btn-outline-primary"
+                >
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-info"
+                  onclick="viewStudent({{ student.id }})"
+                >
+                  <i class="fas fa-eye"></i> View
+                </button>
+                <a
+                  href="{% url 'sms:delete_student' student.id %}"
+                  class="btn btn-sm btn-outline-danger"
+                >
+                  <i class="fas fa-trash"></i> Delete
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="text-center">No students found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Student Details Modal -->
+<div class="modal fade" id="studentModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Student Details</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body" id="studentDetails">
+        <!-- Student details will be loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const departmentFilter = document.getElementById("departmentFilter");
+    const table = document.getElementById("studentsTable");
+    const rows = table
+      .getElementsByTagName("tbody")[0]
+      .getElementsByTagName("tr");
+
+    function filterTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedDept = departmentFilter.value.toLowerCase();
+
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const cells = row.getElementsByTagName("td");
+
+        if (cells.length > 0) {
+          const studentId = cells[0].textContent.toLowerCase();
+          const name = cells[1].textContent.toLowerCase();
+          const email = cells[2].textContent.toLowerCase();
+          const department = cells[3].textContent.toLowerCase();
+
+          const matchesSearch =
+            studentId.includes(searchTerm) ||
+            name.includes(searchTerm) ||
+            email.includes(searchTerm);
+
+          const matchesDept =
+            selectedDept === "" || department.includes(selectedDept);
+
+          if (matchesSearch && matchesDept) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        }
+      }
+    }
+
+    searchInput.addEventListener("keyup", filterTable);
+    departmentFilter.addEventListener("change", filterTable);
+  });
+
+  function viewStudent(studentId) {
+    // Show loading spinner
+    document.getElementById("studentDetails").innerHTML = `
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading student details...</p>
+        </div>
+    `;
+
+    const modal = new bootstrap.Modal(document.getElementById("studentModal"));
+    modal.show();
+
+    // Fetch student details via AJAX
+    fetch(`/student-details/${studentId}/`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          displayStudentDetails(data.student);
+        } else {
+          document.getElementById("studentDetails").innerHTML = `
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle"></i> ${
+                data.error || "Failed to load student details"
+              }
+            </div>
+          `;
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        document.getElementById("studentDetails").innerHTML = `
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i> An error occurred while loading student details.
+          </div>
+        `;
+      });
+  }
+
+  function displayStudentDetails(student) {
+    const gradeCountsHtml =
+      Object.keys(student.grade_counts).length > 0
+        ? Object.entries(student.grade_counts)
+            .map(
+              ([grade, count]) =>
+                `<span class="badge bg-${getGradeBadgeColor(
+                  grade
+                )} me-1">${grade}: ${count}</span>`
+            )
+            .join("")
+        : '<span class="text-muted">No grades recorded</span>';
+
+    const recentGradesHtml =
+      student.recent_grades.length > 0
+        ? student.recent_grades
+            .map(
+              (grade) => `
+          <tr>
+            <td>${grade.course}</td>
+            <td><span class="badge bg-${getGradeBadgeColor(grade.grade)}">${
+                grade.grade
+              }</span></td>
+            <td>${grade.marks}%</td>
+            <td>${grade.date}</td>
+          </tr>
+        `
+            )
+            .join("")
+        : '<tr><td colspan="4" class="text-center text-muted">No grades recorded</td></tr>';
+
+    document.getElementById("studentDetails").innerHTML = `
+      <div class="row">
+        <!-- Personal Information -->
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+              <h6 class="mb-0"><i class="fas fa-user"></i> Personal Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Full Name:</strong></div>
+                <div class="col-sm-7">${student.full_name}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Student ID:</strong></div>
+                <div class="col-sm-7"><span class="badge bg-info">${
+                  student.student_id
+                }</span></div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Username:</strong></div>
+                <div class="col-sm-7"><code>${student.username}</code></div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Password:</strong></div>
+                <div class="col-sm-7">
+                  <code class="bg-light p-1 rounded">${
+                    student.current_password
+                  }</code>
+                  <br>
+                  <small class="text-info">${student.password_note}</small>
+                  <br>
+                  <button class="btn btn-sm btn-outline-warning mt-1" onclick="resetPassword('${
+                    student.student_id
+                  }')">
+                    <i class="fas fa-key"></i> Reset Password
+                  </button>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Email:</strong></div>
+                <div class="col-sm-7">${student.email}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Date of Birth:</strong></div>
+                <div class="col-sm-7">${student.date_of_birth}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Parent Phone:</strong></div>
+                <div class="col-sm-7">${student.parent_phone}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Last Login:</strong></div>
+                <div class="col-sm-7">
+                  <span class="text-${
+                    student.last_login === "Never logged in"
+                      ? "warning"
+                      : "success"
+                  }">
+                    ${student.last_login}
+                  </span>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Account Created:</strong></div>
+                <div class="col-sm-7">${student.date_joined}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Status:</strong></div>
+                <div class="col-sm-7">
+                  <span class="badge bg-${
+                    student.is_active ? "success" : "danger"
+                  }">
+                    ${student.is_active ? "Active" : "Inactive"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Academic Information -->
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div class="card-header bg-success text-white">
+              <h6 class="mb-0"><i class="fas fa-graduation-cap"></i> Academic Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Department:</strong></div>
+                <div class="col-sm-7">${student.department}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Year:</strong></div>
+                <div class="col-sm-7">${student.year}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Enrollment Date:</strong></div>
+                <div class="col-sm-7">${student.enrollment_date}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Overall GPA:</strong></div>
+                <div class="col-sm-7">
+                  <span class="badge bg-${getGPABadgeColor(
+                    student.avg_gpa
+                  )} fs-6">${student.avg_gpa}</span>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Total Grades:</strong></div>
+                <div class="col-sm-7">${student.total_grades}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-sm-5"><strong>Grade Distribution:</strong></div>
+                <div class="col-sm-7">${gradeCountsHtml}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Grades -->
+      <div class="row mt-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header bg-info text-white">
+              <h6 class="mb-0"><i class="fas fa-chart-line"></i> Recent Grades</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Course</th>
+                      <th>Grade</th>
+                      <th>Marks</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${recentGradesHtml}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function getGradeBadgeColor(grade) {
+    switch (grade) {
+      case "A+":
+      case "A":
+        return "success";
+      case "B+":
+      case "B":
+        return "primary";
+      case "C+":
+      case "C":
+        return "warning";
+      case "F":
+        return "danger";
+      default:
+        return "secondary";
+    }
+  }
+
+  function getGPABadgeColor(gpa) {
+    if (gpa >= 3.5) return "success";
+    if (gpa >= 3.0) return "primary";
+    if (gpa >= 2.5) return "warning";
+    return "danger";
+  }
+
+  function resetPassword(studentId) {
+    if (
+      confirm(
+        `Are you sure you want to reset the password for student ${studentId}?\n\nThis will generate a new temporary password.`
+      )
+    ) {
+      // Show loading state
+      const button = event.target;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting...';
+      button.disabled = true;
+
+      // Simulate password reset (you can implement actual password reset logic)
+      setTimeout(() => {
+        const newPassword = "student123"; // Default password
+        alert(
+          `Password reset successful!\n\nNew temporary password: ${newPassword}\n\nPlease inform the student to change this password after first login.`
+        );
+
+        // Restore button
+        button.innerHTML = originalText;
+        button.disabled = false;
+      }, 1500);
+    }
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,395 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Manage Grades -
+Admin Panel{% endblock %} {% block extra_css %}
+<style>
+  body {
+    background: #f8f9fa;
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+</style>
+{% endblock %} {% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+  <div class="sidebar-header">
+    <i
+      class="fas fa-crown"
+      style="color: #f39c12; font-size: 2rem; margin-bottom: 10px"
+    ></i>
+    <h3>Admin Control Center</h3>
+    <p>Manage Grades</p>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li>
+      <a href="{% url 'sms:admin_dashboard' %}">
+        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_students' %}">
+        <i class="fas fa-users"></i> Manage Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:course_analysis' %}">
+        <i class="fas fa-chart-line"></i> Course Analysis
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:performance_trends' %}">
+        <i class="fas fa-chart-area"></i> Performance Trends
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:import_csv_data' %}">
+        <i class="fas fa-file-import"></i> Import CSV Data
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:at_risk_students' %}">
+        <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_grades' %}" class="active">
+        <i class="fas fa-user-check"></i> Manage Grades
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:admin_panel' %}">
+        <i class="fas fa-cog"></i> Admin Panel
+      </a>
+    </li>
+  </ul>
+
+  <div style="position: absolute; bottom: 20px; left: 20px; right: 20px">
+    <a
+      href="{% url 'sms:logout' %}"
+      style="color: #e74c3c; text-decoration: none"
+    >
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <!-- Top Navbar -->
+  <div class="top-navbar">
+    <h1><i class="fas fa-chart-bar"></i> Manage Grades</h1>
+    <div class="user-info">
+      <a href="{% url 'sms:add_grade' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New Grade
+      </a>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+    <div
+      class="alert alert-{{ message.tags }} alert-dismissible fade show"
+      role="alert"
+    >
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Failing Grades Statistics -->
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="card border-danger">
+          <div class="card-body text-center">
+            <div class="d-flex align-items-center justify-content-center mb-2">
+              <i
+                class="fas fa-exclamation-triangle text-danger"
+                style="font-size: 2rem; margin-right: 10px"
+              ></i>
+              <div>
+                <h2
+                  class="text-danger mb-0"
+                  style="font-size: 2.5rem; font-weight: bold"
+                >
+                  {{ failing_grades_count }}
+                </h2>
+                <small class="text-muted">Failing Grades (F)</small>
+              </div>
+            </div>
+            <div class="progress" style="height: 8px">
+              <div
+                class="progress-bar bg-danger"
+                role="progressbar"
+                style="width: {{ failing_percentage }}%"
+              ></div>
+            </div>
+            <small class="text-muted"
+              >{{ failing_percentage }}% of all grades</small
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card border-warning">
+          <div class="card-body text-center">
+            <div class="d-flex align-items-center justify-content-center mb-2">
+              <i
+                class="fas fa-user-times text-warning"
+                style="font-size: 2rem; margin-right: 10px"
+              ></i>
+              <div>
+                <h2
+                  class="text-warning mb-0"
+                  style="font-size: 2.5rem; font-weight: bold"
+                >
+                  {{ failing_students_count }}
+                </h2>
+                <small class="text-muted">Students with F Grades</small>
+              </div>
+            </div>
+            <div class="mt-2">
+              <a
+                href="{% url 'sms:at_risk_students' %}"
+                class="btn btn-warning btn-sm"
+              >
+                <i class="fas fa-eye"></i> View At-Risk Students
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card border-info">
+          <div class="card-body text-center">
+            <div class="d-flex align-items-center justify-content-center mb-2">
+              <i
+                class="fas fa-chart-bar text-info"
+                style="font-size: 2rem; margin-right: 10px"
+              ></i>
+              <div>
+                <h2
+                  class="text-info mb-0"
+                  style="font-size: 2.5rem; font-weight: bold"
+                >
+                  {{ total_grades_count }}
+                </h2>
+                <small class="text-muted">Total Grades</small>
+              </div>
+            </div>
+            <div class="mt-2">
+              <small class="text-muted">All recorded grades</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card border-success">
+          <div class="card-body text-center">
+            <div class="d-flex align-items-center justify-content-center mb-2">
+              <i
+                class="fas fa-check-circle text-success"
+                style="font-size: 2rem; margin-right: 10px"
+              ></i>
+              <div>
+                <h2
+                  class="text-success mb-0"
+                  style="font-size: 2.5rem; font-weight: bold"
+                >
+                  {{ passing_grades_count }}
+                </h2>
+                <small class="text-muted">Passing Grades</small>
+              </div>
+            </div>
+            <div class="progress" style="height: 8px">
+              <div
+                class="progress-bar bg-success"
+                role="progressbar"
+                style="width: {{ passing_percentage }}%"
+              ></div>
+            </div>
+            <small class="text-muted"
+              >{{ passing_percentage }}% passing rate</small
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grades Table -->
+  <div class="form-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3><i class="fas fa-table"></i> Grades List</h3>
+      <div class="d-flex gap-2">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search names..."
+          id="searchInput"
+          style="width: 300px"
+        />
+        <select class="form-select" id="courseFilter" style="width: 200px">
+          <option value="">All Courses</option>
+          {% for course in courses %}
+          <option value="{{ course.subject.name }}">
+            {{ course.subject.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover" id="gradesTable">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Course</th>
+            <th>Department</th>
+            <th>Marks</th>
+            <th>Grade</th>
+            <th>GPA</th>
+            <th>Exam Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for grade in grades %}
+          <tr>
+            <td><strong>{{ grade.student.student_id }}</strong></td>
+            <td>{{ grade.student.user.get_full_name }}</td>
+            <td>{{ grade.course.subject.name }}</td>
+            <td>{{ grade.course.subject.department.name }}</td>
+            <td>{{ grade.marks_obtained }}/{{ grade.course.max_marks }}</td>
+            <td>
+              <span
+                class="badge bg-{% if grade.grade == 'A+' or grade.grade == 'A' %}success{% elif grade.grade == 'B+' or grade.grade == 'B' %}primary{% elif grade.grade == 'C+' or grade.grade == 'C' %}warning{% else %}danger{% endif %}"
+              >
+                {{ grade.grade }}
+              </span>
+            </td>
+            <td>{{ grade.gpa }}</td>
+            <td>{{ grade.exam_date|default:"N/A" }}</td>
+            <td>
+              <div class="btn-group" role="group">
+                <a
+                  href="{% url 'sms:edit_grade' grade.id %}"
+                  class="btn btn-sm btn-outline-primary"
+                >
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+                <a
+                  href="{% url 'sms:delete_grade' grade.id %}"
+                  class="btn btn-sm btn-outline-danger"
+                >
+                  <i class="fas fa-trash"></i> Delete
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="9" class="text-center">No grades found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Grade Statistics -->
+    <div class="row mt-4">
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="color: #27ae60">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="stat-number">{{ grades|length }}</div>
+          <div class="stat-label">Total Grades</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="color: #3498db">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-number">
+            {{ a_grades_count }}
+          </div>
+          <div class="stat-label">A Grades</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="color: #f39c12">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-number">
+            {{ avg_gpa }}
+          </div>
+          <div class="stat-label">Avg GPA</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="color: #e74c3c">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="stat-number">
+            {{ failing_grades_count }}
+          </div>
+          <div class="stat-label">Failing Grades</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const courseFilter = document.getElementById("courseFilter");
+    const table = document.getElementById("gradesTable");
+    const rows = table
+      .getElementsByTagName("tbody")[0]
+      .getElementsByTagName("tr");
+
+    function filterTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedCourse = courseFilter.value.toLowerCase();
+
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const cells = row.getElementsByTagName("td");
+
+        if (cells.length > 0) {
+          const studentId = cells[0].textContent.toLowerCase();
+          const studentName = cells[1].textContent.toLowerCase();
+          const course = cells[2].textContent.toLowerCase();
+
+          const matchesSearch =
+            studentId.includes(searchTerm) ||
+            studentName.includes(searchTerm) ||
+            course.includes(searchTerm);
+
+          const matchesCourse =
+            selectedCourse === "" || course.includes(selectedCourse);
+
+          if (matchesSearch && matchesCourse) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        }
+      }
+    }
+
+    searchInput.addEventListener("keyup", filterTable);
+    courseFilter.addEventListener("change", filterTable);
+  });
+</script>
+{% endblock %}

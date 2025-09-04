@@ -1,0 +1,70 @@
+student_id,subject,course,grade,semester,academic_year
+CS2024001,Mathematics,Calculus I,B+,Fall,2024
+CS2024001,Computer Science,Programming Fundamentals,A,Fall,2024
+CS2024001,Physics,Physics I,F,Fall,2024
+CS2024002,Mathematics,Calculus I,A+,Fall,2024
+CS2024002,Computer Science,Programming Fundamentals,A,Fall,2024
+CS2024002,Physics,Physics I,A,Fall,2024
+CS2024003,Mathematics,Calculus I,C,Fall,2024
+CS2024003,Computer Science,Programming Fundamentals,B,Fall,2024
+CS2024003,Physics,Physics I,F,Fall,2024
+CS2024004,Mathematics,Calculus I,A,Fall,2024
+CS2024004,Computer Science,Programming Fundamentals,B+,Fall,2024
+CS2024004,Physics,Physics I,B,Fall,2024
+CS2024005,Mathematics,Calculus I,F,Fall,2024
+CS2024005,Computer Science,Programming Fundamentals,F,Fall,2024
+CS2024005,Physics,Physics I,D,Fall,2024
+CS2024018,Mathematics,Calculus I,F,Fall,2024
+CS2024018,Computer Science,Programming Fundamentals,D,Fall,2024
+CS2024018,Physics,Physics I,F,Fall,2024
+CS2024019,Mathematics,Calculus I,A,Fall,2024
+CS2024019,Computer Science,Programming Fundamentals,B+,Fall,2024
+CS2024019,Physics,Physics I,A-,Fall,2024
+CS2024020,Mathematics,Calculus II,F,Fall,2024
+CS2024020,Computer Science,Data Structures,C,Fall,2024
+CS2024020,Physics,Physics II,F,Fall,2024
+CS2024021,Mathematics,Calculus II,B,Fall,2024
+CS2024021,Computer Science,Data Structures,A,Fall,2024
+CS2024021,Physics,Physics II,B+,Fall,2024
+CS2024022,Mathematics,Linear Algebra,A+,Fall,2024
+CS2024022,Computer Science,Algorithms,A,Fall,2024
+CS2024022,Physics,Modern Physics,A,Fall,2024
+CS2024023,Mathematics,Calculus I,F,Fall,2024
+CS2024023,Computer Science,Programming Fundamentals,F,Fall,2024
+CS2024023,Physics,Physics I,F,Fall,2024
+CS2024024,Mathematics,Calculus II,B+,Fall,2024
+CS2024024,Computer Science,Data Structures,A-,Fall,2024
+CS2024024,Physics,Physics II,B,Fall,2024
+CS2024025,Mathematics,Calculus II,C,Fall,2024
+CS2024025,Computer Science,Data Structures,F,Fall,2024
+CS2024025,Physics,Physics II,D,Fall,2024
+EE2024026,Mathematics,Calculus I,B,Fall,2024
+EE2024026,Electrical Engineering,Circuit Analysis,A,Fall,2024
+EE2024026,Physics,Physics I,B+,Fall,2024
+EE2024027,Mathematics,Calculus II,F,Fall,2024
+EE2024027,Electrical Engineering,Digital Logic,F,Fall,2024
+EE2024027,Physics,Physics II,D,Fall,2024
+EE2024028,Mathematics,Differential Equations,A,Fall,2024
+EE2024028,Electrical Engineering,Electronics,B+,Fall,2024
+EE2024028,Physics,Modern Physics,A-,Fall,2024
+EE2024029,Mathematics,Linear Algebra,A+,Fall,2024
+EE2024029,Electrical Engineering,Control Systems,A,Fall,2024
+EE2024029,Physics,Quantum Physics,A,Fall,2024
+EE2024030,Mathematics,Calculus I,F,Fall,2024
+EE2024030,Electrical Engineering,Circuit Analysis,F,Fall,2024
+EE2024030,Physics,Physics I,F,Fall,2024
+ME2024033,Mathematics,Calculus I,C,Fall,2024
+ME2024033,Mechanical Engineering,Statics,B,Fall,2024
+ME2024033,Physics,Physics I,B-,Fall,2024
+ME2024034,Mathematics,Calculus II,F,Fall,2024
+ME2024034,Mechanical Engineering,Dynamics,F,Fall,2024
+ME2024034,Physics,Physics II,D,Fall,2024
+ME2024035,Mathematics,Differential Equations,A,Fall,2024
+ME2024035,Mechanical Engineering,Thermodynamics,B+,Fall,2024
+ME2024035,Physics,Modern Physics,A-,Fall,2024
+ME2024036,Mathematics,Linear Algebra,A+,Fall,2024
+ME2024036,Mechanical Engineering,Fluid Mechanics,A,Fall,2024
+ME2024036,Physics,Quantum Physics,A,Fall,2024
+ME2024037,Mathematics,Calculus I,F,Fall,2024
+ME2024037,Mechanical Engineering,Statics,F,Fall,2024
+ME2024037,Physics,Physics I,F,Fall,2024

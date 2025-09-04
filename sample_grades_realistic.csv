@@ -1,0 +1,46 @@
+student_id,subject,course,grade,marks_obtained,total_marks
+CS2024051,Mathematics,Calculus I,B+,78,100
+CS2024051,Computer Science,Programming Fundamentals,A,85,100
+CS2024051,Physics,Physics I,B,72,100
+CS2024052,Mathematics,Calculus II,F,32,100
+CS2024052,Computer Science,Data Structures,F,28,100
+CS2024052,Physics,Physics II,D,45,100
+CS2024053,Mathematics,Linear Algebra,A+,92,100
+CS2024053,Computer Science,Algorithms,A,88,100
+CS2024053,Physics,Modern Physics,A-,82,100
+CS2024054,Mathematics,Statistics,B,68,100
+CS2024054,Computer Science,Software Engineering,A,90,100
+CS2024054,Computer Science,Database Systems,B+,75,100
+CS2024055,Mathematics,Calculus I,F,25,100
+CS2024055,Computer Science,Programming Fundamentals,F,18,100
+CS2024055,Physics,Physics I,F,22,100
+EE2024056,Mathematics,Calculus II,A,86,100
+EE2024056,Electrical Engineering,Circuit Analysis,B+,77,100
+EE2024056,Physics,Physics II,A-,81,100
+EE2024057,Mathematics,Differential Equations,F,35,100
+EE2024057,Electrical Engineering,Digital Logic,F,29,100
+EE2024057,Physics,Modern Physics,C,52,100
+EE2024058,Mathematics,Calculus I,A+,95,100
+EE2024058,Electrical Engineering,Circuit Analysis,A,89,100
+EE2024058,Physics,Physics I,A,87,100
+EE2024059,Mathematics,Linear Algebra,B,65,100
+EE2024059,Electrical Engineering,Control Systems,A,91,100
+EE2024059,Physics,Quantum Physics,B+,73,100
+EE2024060,Mathematics,Calculus II,F,38,100
+EE2024060,Electrical Engineering,Digital Logic,F,31,100
+EE2024060,Physics,Physics II,F,26,100
+ME2024061,Mathematics,Calculus I,A,84,100
+ME2024061,Mechanical Engineering,Statics,B+,76,100
+ME2024061,Physics,Physics I,A-,80,100
+ME2024062,Mathematics,Differential Equations,B,69,100
+ME2024062,Mechanical Engineering,Thermodynamics,A,88,100
+ME2024062,Physics,Modern Physics,B+,74,100
+ME2024063,Mathematics,Calculus II,F,33,100
+ME2024063,Mechanical Engineering,Dynamics,F,27,100
+ME2024063,Physics,Physics II,F,24,100
+ME2024064,Mathematics,Linear Algebra,A+,93,100
+ME2024064,Mechanical Engineering,Fluid Mechanics,A,90,100
+ME2024064,Physics,Quantum Physics,A,86,100
+ME2024065,Mathematics,Calculus I,C,55,100
+ME2024065,Mechanical Engineering,Statics,F,39,100
+ME2024065,Physics,Physics I,D,48,100

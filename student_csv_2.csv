@@ -1,0 +1,17 @@
+username,email,first_name,last_name,student_id,department_code,year,enrollment_date,phone
+harper.jackson,harper.jackson@university.edu,Harper,Jackson,CS2025016,CS,1,2025-01-15,555-2001
+sebastian.white,sebastian.white@university.edu,Sebastian,White,CS2025017,CS,1,2025-01-15,555-2002
+evelyn.harris,evelyn.harris@university.edu,Evelyn,Harris,CS2025018,CS,2,2024-01-15,555-2003
+owen.martin,owen.martin@university.edu,Owen,Martin,CS2025019,CS,2,2024-01-15,555-2004
+abigail.garcia,abigail.garcia@university.edu,Abigail,Garcia,CS2025020,CS,3,2023-01-15,555-2005
+carter.rodriguez,carter.rodriguez@university.edu,Carter,Rodriguez,CS2025021,CS,3,2023-01-15,555-2006
+scarlett.lewis,scarlett.lewis@university.edu,Scarlett,Lewis,CS2025022,CS,4,2022-01-15,555-2007
+wyatt.lee,wyatt.lee@university.edu,Wyatt,Lee,CS2025023,CS,4,2022-01-15,555-2008
+luna.walker,luna.walker@university.edu,Luna,Walker,EE2025024,EE,1,2025-01-15,555-2009
+grayson.hall,grayson.hall@university.edu,Grayson,Hall,EE2025025,EE,1,2025-01-15,555-2010
+chloe.allen,chloe.allen@university.edu,Chloe,Allen,EE2025026,EE,2,2024-01-15,555-2011
+levi.young,levi.young@university.edu,Levi,Young,EE2025027,EE,2,2024-01-15,555-2012
+zoey.hernandez,zoey.hernandez@university.edu,Zoey,Hernandez,EE2025028,EE,3,2023-01-15,555-2013
+caleb.king,caleb.king@university.edu,Caleb,King,EE2025029,EE,3,2023-01-15,555-2014
+layla.wright,layla.wright@university.edu,Layla,Wright,EE2025030,EE,4,2022-01-15,555-2015
+tanisha.kavani,tanisha.kavani@university.edu,Tanisha,Kavani,EE2025031,EE,4,2022-01-15,555-2016

@@ -1,0 +1,376 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Performance Trends
+- Admin Panel{% endblock %} {% block extra_css %}
+<style>
+  body {
+    background: #f8f9fa;
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 400px;
+    margin: 20px 0;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .trend-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .dept-performance {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .dept-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .dept-gpa {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+
+  .trend-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+</style>
+{% endblock %} {% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+  <div class="sidebar-header">
+    <i
+      class="fas fa-crown"
+      style="color: #f39c12; font-size: 2rem; margin-bottom: 10px"
+    ></i>
+    <h3>Admin Control Center</h3>
+    <p>Performance Trends</p>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li>
+      <a href="{% url 'sms:admin_dashboard' %}">
+        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_students' %}">
+        <i class="fas fa-users"></i> Manage Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:course_analysis' %}">
+        <i class="fas fa-chart-line"></i> Course Analysis
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:performance_trends' %}" class="active">
+        <i class="fas fa-chart-area"></i> Performance Trends
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:import_csv_data' %}">
+        <i class="fas fa-file-import"></i> Import CSV Data
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:at_risk_students' %}">
+        <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_grades' %}">
+        <i class="fas fa-user-check"></i> Manage Grades
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:admin_panel' %}">
+        <i class="fas fa-cog"></i> Admin Panel
+      </a>
+    </li>
+  </ul>
+
+  <div style="position: absolute; bottom: 20px; left: 20px; right: 20px">
+    <a
+      href="{% url 'sms:logout' %}"
+      style="color: #e74c3c; text-decoration: none"
+    >
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <!-- Top Navbar -->
+  <div class="top-navbar">
+    <h1><i class="fas fa-trending-up"></i> Performance Trends</h1>
+    <div class="user-info">
+      <span>Total Grades Analyzed: {{ total_grades }}</span>
+    </div>
+  </div>
+
+  <!-- Trend Statistics -->
+  <div class="form-container">
+    <div class="trend-stats">
+      <div class="stat-card">
+        <div class="stat-icon" style="color: #3498db">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-number">{{ trend_data|length }}</div>
+        <div class="stat-label">Months Tracked</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="color: #e74c3c">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="stat-number">{{ total_departments }}</div>
+        <div class="stat-label">Departments</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="color: #1abc9c">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="stat-number">{{ total_grades }}</div>
+        <div class="stat-label">Total Grades</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="color: #f39c12">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="stat-number">
+          {% if latest_avg_gpa %}{{ latest_avg_gpa }}{% else %}0.0{% endif %}
+        </div>
+        <div class="stat-label">Latest Avg GPA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monthly Performance Trend -->
+  <div class="form-container">
+    <div class="chart-container">
+      <h4><i class="fas fa-chart-area"></i> Monthly Performance Trends</h4>
+      <canvas id="monthlyTrendChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Department Performance -->
+  <div class="form-container">
+    <h3><i class="fas fa-building"></i> Department Performance</h3>
+    <div class="dept-performance">
+      {% for dept in dept_data %}
+      <div class="dept-card" style="{% if dept.student_count == 0 %}background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);{% endif %}">
+        <h5>{{ dept.department }}</h5>
+        <div class="dept-gpa">
+          {% if dept.student_count > 0 %}
+            {{ dept.avg_gpa }}
+          {% else %}
+            N/A
+          {% endif %}
+        </div>
+        <p>Average GPA</p>
+        <small>
+          {% if dept.student_count > 0 %}
+            {{ dept.student_count }} grade{{ dept.student_count|pluralize }}
+          {% else %}
+            No grades yet
+          {% endif %}
+        </small>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i> No department data available.
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Monthly Breakdown -->
+  <div class="form-container">
+    <div class="trend-card">
+      <h4><i class="fas fa-calendar"></i> Monthly Breakdown</h4>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Average GPA</th>
+              <th>Students Evaluated</th>
+              <th>Trend</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for data in trend_data %}
+            <tr>
+              <td>{{ data.month }}</td>
+              <td>
+                <span
+                  class="badge bg-{% if data.avg_gpa >= 3.5 %}success{% elif data.avg_gpa >= 3.0 %}primary{% elif data.avg_gpa >= 2.5 %}warning{% else %}danger{% endif %}"
+                >
+                  {{ data.avg_gpa }}
+                </span>
+              </td>
+              <td>{{ data.student_count }}</td>
+              <td>
+                <span class="text-{{ data.trend_class }}">
+                  {{ data.trend }}
+                </span>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center">No trend data available</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    loadTrendChart();
+
+    function loadTrendChart() {
+      fetch('{% url "sms:performance_trends_data" %}')
+        .then((response) => response.json())
+        .then((data) => {
+          const ctx = document
+            .getElementById("monthlyTrendChart")
+            .getContext("2d");
+
+          new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: data.months.map(month => {
+                const date = new Date(month + '-01');
+                return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+              }),
+              datasets: [
+                {
+                  label: "Average GPA",
+                  data: data.avg_gpas,
+                  borderColor: "rgba(52, 152, 219, 1)",
+                  backgroundColor: "rgba(52, 152, 219, 0.2)",
+                  borderWidth: 3,
+                  fill: true,
+                  tension: 0.4,
+                  pointBackgroundColor: "rgba(52, 152, 219, 1)",
+                  pointBorderColor: "#fff",
+                  pointBorderWidth: 3,
+                  pointRadius: 8,
+                  pointHoverRadius: 10,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: {
+                intersect: false,
+                mode: 'index',
+              },
+              plugins: {
+                legend: {
+                  display: true,
+                  position: "top",
+                  labels: {
+                    usePointStyle: true,
+                    padding: 20,
+                  },
+                },
+                title: {
+                  display: true,
+                  text: "Monthly Average GPA Trends",
+                  font: {
+                    size: 18,
+                    weight: "bold",
+                  },
+                  padding: 20,
+                },
+                tooltip: {
+                  backgroundColor: 'rgba(0,0,0,0.8)',
+                  titleColor: 'white',
+                  bodyColor: 'white',
+                  borderColor: 'rgba(52, 152, 219, 1)',
+                  borderWidth: 1,
+                  callbacks: {
+                    label: function(context) {
+                      return `Average GPA: ${context.parsed.y.toFixed(2)}`;
+                    }
+                  }
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 4.0,
+                  grid: {
+                    color: "rgba(0,0,0,0.1)",
+                    drawBorder: false,
+                  },
+                  ticks: {
+                    stepSize: 0.5,
+                    callback: function(value) {
+                      return value.toFixed(1);
+                    }
+                  },
+                  title: {
+                    display: true,
+                    text: 'GPA',
+                    font: {
+                      size: 14,
+                      weight: 'bold'
+                    }
+                  }
+                },
+                x: {
+                  grid: {
+                    color: "rgba(0,0,0,0.1)",
+                    drawBorder: false,
+                  },
+                  title: {
+                    display: true,
+                    text: 'Month',
+                    font: {
+                      size: 14,
+                      weight: 'bold'
+                    }
+                  }
+                },
+              },
+            },
+          });
+        })
+        .catch((error) => {
+          console.error("Error loading trend chart:", error);
+        });
+    }
+  });
+</script>
+{% endblock %}

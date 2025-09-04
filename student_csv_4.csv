@@ -1,0 +1,16 @@
+username,email,first_name,last_name,student_id,department_code,year,enrollment_date,phone
+brooklyn.parker,brooklyn.parker@university.edu,Brooklyn,Parker,CS2025046,CS,1,2025-01-15,555-4001
+roman.evans,roman.evans@university.edu,Roman,Evans,CS2025047,CS,1,2025-01-15,555-4002
+leah.edwards,leah.edwards@university.edu,Leah,Edwards,CS2025048,CS,2,2024-01-15,555-4003
+maverick.collins,maverick.collins@university.edu,Maverick,Collins,CS2025049,CS,2,2024-01-15,555-4004
+paisley.stewart,paisley.stewart@university.edu,Paisley,Stewart,CS2025050,CS,3,2023-01-15,555-4005
+beau.sanchez,beau.sanchez@university.edu,Beau,Sanchez,CS2025051,CS,3,2023-01-15,555-4006
+kinsley.morris,kinsley.morris@university.edu,Kinsley,Morris,CS2025052,CS,4,2022-01-15,555-4007
+kai.rogers,kai.rogers@university.edu,Kai,Rogers,CS2025053,CS,4,2022-01-15,555-4008
+skylar.reed,skylar.reed@university.edu,Skylar,Reed,EE2025054,EE,1,2025-01-15,555-4009
+declan.cook,declan.cook@university.edu,Declan,Cook,EE2025055,EE,1,2025-01-15,555-4010
+adalyn.morgan,adalyn.morgan@university.edu,Adalyn,Morgan,EE2025056,EE,2,2024-01-15,555-4011
+braxton.bell,braxton.bell@university.edu,Braxton,Bell,EE2025057,EE,2,2024-01-15,555-4012
+raelynn.murphy,raelynn.murphy@university.edu,Raelynn,Murphy,EE2025058,EE,3,2023-01-15,555-4013
+zander.bailey,zander.bailey@university.edu,Zander,Bailey,EE2025059,EE,3,2023-01-15,555-4014
+emery.rivera,emery.rivera@university.edu,Emery,Rivera,EE2025060,EE,4,2022-01-15,555-4015

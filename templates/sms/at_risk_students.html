@@ -1,0 +1,570 @@
+{% extends 'base.html' %} {% load static %} {% block title %}At-Risk Students -
+Admin Panel{% endblock %} {% block extra_css %}
+<style>
+  body {
+    background: #f8f9fa;
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 400px;
+    margin: 20px 0;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 30px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+  }
+
+  .sidebar-menu li {
+    margin: 0;
+  }
+
+  .sidebar-menu a {
+    display: block;
+    padding: 15px 25px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .sidebar-menu a:hover,
+  .sidebar-menu a.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-left-color: #f39c12;
+    transform: translateX(5px);
+  }
+
+  .main-content {
+    margin-left: 250px;
+    min-height: 100vh;
+    background: #f8f9fa;
+  }
+
+  .top-navbar {
+    background: white;
+    padding: 20px 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .form-container {
+    background: white;
+    margin: 20px 30px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .alert-summary {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+
+  .clickable-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .active-filter {
+    border: 3px solid #007bff !important;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3) !important;
+  }
+
+  .risk-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #ddd;
+    transition: all 0.3s ease;
+  }
+
+  .risk-card.risk-critical {
+    border-left-color: #e74c3c;
+  }
+
+  .risk-card.risk-high {
+    border-left-color: #f39c12;
+  }
+
+  .risk-card.risk-medium {
+    border-left-color: #3498db;
+  }
+
+  .risk-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  .student-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+  }
+
+  .student-id {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+  }
+
+  .student-department {
+    color: #95a5a6;
+    font-size: 0.85rem;
+  }
+
+  .stat-value {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .risk-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .risk-badge.bg-critical {
+    background-color: #e74c3c;
+    color: white;
+  }
+
+  .risk-badge.bg-high {
+    background-color: #f39c12;
+    color: white;
+  }
+
+  .risk-badge.bg-medium {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .trend-icon {
+    margin-right: 5px;
+  }
+
+  .trend-improving {
+    color: #27ae60;
+  }
+
+  .trend-declining {
+    color: #e74c3c;
+  }
+
+  .trend-stable {
+    color: #95a5a6;
+  }
+</style>
+{% endblock %} {% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+  <div class="sidebar-header">
+    <i
+      class="fas fa-crown"
+      style="color: #f39c12; font-size: 2rem; margin-bottom: 10px"
+    ></i>
+    <h3>Admin Control Center</h3>
+    <p>At-Risk Students</p>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li>
+      <a href="{% url 'sms:admin_dashboard' %}">
+        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_students' %}">
+        <i class="fas fa-users"></i> Manage Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:course_analysis' %}">
+        <i class="fas fa-chart-line"></i> Course Analysis
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:performance_trends' %}">
+        <i class="fas fa-chart-area"></i> Performance Trends
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:import_csv_data' %}">
+        <i class="fas fa-file-import"></i> Import CSV Data
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:at_risk_students' %}" class="active">
+        <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_grades' %}">
+        <i class="fas fa-user-check"></i> Manage Grades
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:admin_panel' %}">
+        <i class="fas fa-cog"></i> Admin Panel
+      </a>
+    </li>
+  </ul>
+
+  <div style="position: absolute; bottom: 20px; left: 20px; right: 20px">
+    <a
+      href="{% url 'sms:logout' %}"
+      style="color: #e74c3c; text-decoration: none"
+    >
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <!-- Top Navbar -->
+  <div class="top-navbar">
+    <h1><i class="fas fa-exclamation-triangle"></i> At-Risk Students</h1>
+    <div class="user-info">
+      <span class="badge bg-danger"
+        >{{ total_at_risk }} Students Need Attention</span
+      >
+    </div>
+  </div>
+
+  <!-- Alert Summary -->
+  {% if total_at_risk > 0 %}
+  <div class="form-container">
+    <div class="alert-summary">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h4>
+            <i class="fas fa-exclamation-triangle"></i> Immediate Attention
+            Required
+          </h4>
+          <p class="mb-0">
+            {{ total_at_risk }} students are currently at risk of academic
+            failure. Early intervention can help improve their performance and
+            prevent dropouts.
+          </p>
+        </div>
+        <div class="col-md-4 text-center">
+          <div style="font-size: 3rem; font-weight: bold">
+            {{ total_at_risk }}
+          </div>
+          <div>At-Risk Students</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Risk Level Statistics -->
+  <div class="form-container">
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div
+          class="stat-card risk-critical clickable-card"
+          onclick="filterByRisk('Critical')"
+          style="cursor: pointer"
+        >
+          <div class="stat-icon" style="color: #e74c3c">
+            <i class="fas fa-times-circle"></i>
+          </div>
+          <div class="stat-number">{{ critical_count }}</div>
+          <div class="stat-label">Critical Risk</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div
+          class="stat-card risk-high clickable-card"
+          onclick="filterByRisk('High')"
+          style="cursor: pointer"
+        >
+          <div class="stat-icon" style="color: #f39c12">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+          <div class="stat-number">{{ high_count }}</div>
+          <div class="stat-label">High Risk</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div
+          class="stat-card risk-medium clickable-card"
+          onclick="filterByRisk('Medium')"
+          style="cursor: pointer"
+        >
+          <div class="stat-icon" style="color: #3498db">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="stat-number">{{ medium_count }}</div>
+          <div class="stat-label">Medium Risk</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- At-Risk Students List -->
+  <div class="form-container">
+    {% if at_risk_students %} {% for student_data in at_risk_students %}
+    <div class="risk-card risk-{{ student_data.risk_level|lower }}">
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <div class="student-name">
+            {{ student_data.student.user.get_full_name }}
+          </div>
+          <div class="student-id">{{ student_data.student.student_id }}</div>
+          <div class="student-department">
+            {{ student_data.student.department.name }}
+          </div>
+        </div>
+
+        <div class="col-md-2 text-center">
+          <div class="stat-value" style="color: #e74c3c">
+            {{ student_data.avg_gpa }}
+          </div>
+          <div class="stat-label">Current GPA</div>
+        </div>
+
+        <div class="col-md-2 text-center">
+          <div class="stat-value" style="color: #f39c12">
+            {{ student_data.failing_grades }}
+          </div>
+          <div class="stat-label">Failing Grades</div>
+        </div>
+
+        <div class="col-md-2 text-center">
+          <span class="trend-icon trend-{{ student_data.trend|lower }}">
+            {% if student_data.trend == 'Improving' %}
+            <i class="fas fa-arrow-up"></i>
+            {% elif student_data.trend == 'Declining' %}
+            <i class="fas fa-arrow-down"></i>
+            {% else %}
+            <i class="fas fa-minus"></i>
+            {% endif %}
+          </span>
+          <span style="font-size: 0.9rem">{{ student_data.trend }}</span>
+        </div>
+
+        <div class="col-md-2 text-center">
+          <span class="risk-badge bg-{{ student_data.risk_level|lower }}">
+            {{ student_data.risk_level }} Risk
+          </span>
+          <div class="mt-2">
+            <button
+              class="btn btn-outline-info btn-sm me-1"
+              onclick="toggleDetails('{{ student_data.student.id }}')"
+            >
+              <i class="fas fa-info-circle"></i>
+            </button>
+            <div class="dropdown d-inline">
+              <button
+                class="btn btn-outline-primary btn-sm dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+              >
+                Actions
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{% url 'sms:edit_student' student_data.student.id %}"
+                  >
+                    <i class="fas fa-edit"></i> Edit Student
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onclick="contactStudent('{{ student_data.student.user.email }}')"
+                  >
+                    <i class="fas fa-envelope"></i> Contact Student
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    onclick="contactParent('{{ student_data.student.parent_phone }}')"
+                  >
+                    <i class="fas fa-phone"></i> Contact Parent
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Details Section -->
+      <div id="details-{{ student_data.student.id }}" class="collapse">
+        <div class="row mt-3 pt-3" style="border-top: 1px solid #eee">
+          <div class="col-md-3">
+            <small class="text-muted">Total Grades:</small>
+            <div class="fw-bold">{{ student_data.total_grades }}</div>
+          </div>
+          <div class="col-md-3">
+            <small class="text-muted">Academic Year:</small>
+            <div class="fw-bold">{{ student_data.student.year }}</div>
+          </div>
+          <div class="col-md-3">
+            <small class="text-muted">Last Grade:</small>
+            <div class="fw-bold">
+              {% if student_data.last_grade %} 
+              {{ student_data.last_grade.grade }} {% else %} N/A {% endif %}
+            </div>
+          </div>
+          <div class="col-md-3">
+            <small class="text-muted">Last Assessment:</small>
+            <div class="fw-bold">
+              {% if student_data.last_grade %} 
+              {{ student_data.last_grade.created_at|date:"M d" }} {% else %} N/A
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <div class="alert alert-warning mb-0" style="font-size: 0.9rem">
+              <strong>Recommended Actions:</strong>
+              {% if student_data.risk_level == 'Critical' %} Immediate
+              intervention required. Schedule meeting with student and parents.
+              Consider academic probation. 
+              {% elif student_data.risk_level == 'High' %} Schedule counseling session. Provide additional tutoring
+              support. Monitor weekly progress. {% else %} Provide study
+              resources. Schedule check-in meeting. Monitor monthly progress. 
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %} {% else %}
+    <div class="text-center py-5">
+      <i
+        class="fas fa-check-circle"
+        style="font-size: 4rem; color: #27ae60; margin-bottom: 20px"
+      ></i>
+      <h4>Great News!</h4>
+      <p class="text-muted">
+        No students are currently at risk. All students are performing well
+        academically.
+      </p>
+      <a href="{% url 'sms:admin_dashboard' %}" class="btn btn-primary">
+        <i class="fas fa-tachometer-alt"></i> Back to Dashboard
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  function contactStudent(email) {
+    window.location.href = `mailto:${email}?subject=Academic Support - Student Management System`;
+  }
+
+  function contactParent(phone) {
+    if (phone && phone !== "None") {
+      alert(`Contact parent at: ${phone}`);
+    } else {
+      alert("Parent contact information not available.");
+    }
+  }
+
+  function toggleDetails(studentId) {
+    const detailsElement = document.getElementById(`details-${studentId}`);
+    const button = document.querySelector(
+      `button[onclick="toggleDetails('${studentId}')"]`
+    );
+
+    if (detailsElement.classList.contains("show")) {
+      detailsElement.classList.remove("show");
+      button.innerHTML = '<i class="fas fa-info-circle"></i>';
+    } else {
+      detailsElement.classList.add("show");
+      button.innerHTML = '<i class="fas fa-times-circle"></i>';
+    }
+  }
+
+  function filterByRisk(riskLevel) {
+    const allCards = document.querySelectorAll(".risk-card");
+    const filterButtons = document.querySelectorAll(".clickable-card");
+
+    // Remove active class from all filter buttons
+    filterButtons.forEach((btn) => btn.classList.remove("active-filter"));
+
+    if (riskLevel === "All") {
+      // Show all cards
+      allCards.forEach((card) => {
+        card.style.display = "block";
+      });
+    } else {
+      // Show only cards matching the risk level
+      allCards.forEach((card) => {
+        const cardRiskLevel = card.classList.contains(
+          "risk-" + riskLevel.toLowerCase()
+        );
+        card.style.display = cardRiskLevel ? "block" : "none";
+      });
+
+      // Add active class to clicked filter button
+      const activeButton = document.querySelector(
+        `.clickable-card[onclick="filterByRisk('${riskLevel}')"]`
+      );
+      if (activeButton) {
+        activeButton.classList.add("active-filter");
+      }
+    }
+  }
+</script>
+{% endblock %}

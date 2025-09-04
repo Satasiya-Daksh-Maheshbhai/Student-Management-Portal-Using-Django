@@ -1,0 +1,484 @@
+{% extends 'base.html' %} {% load static %} {% load math_filters %} 
+{% block title %}Import CSV Data - Admin Panel{% endblock %} {% block extra_css %}
+<style>
+  body {
+    background: #f8f9fa;
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .import-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+
+  .import-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .import-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #3498db;
+  }
+
+  .upload-area {
+    border: 3px dashed #3498db;
+    border-radius: 15px;
+    padding: 40px;
+    margin: 20px 0;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+  }
+
+  .upload-area:hover {
+    border-color: #2980b9;
+    background: #ecf0f1;
+  }
+
+  .upload-area.dragover {
+    border-color: #27ae60;
+    background: #d5f4e6;
+  }
+
+  .prediction-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #3498db;
+  }
+
+  .risk-badge {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white;
+  }
+
+  .risk-low {
+    background: #27ae60;
+  }
+  .risk-medium {
+    background: #f39c12;
+  }
+  .risk-high {
+    background: #e74c3c;
+  }
+  .risk-critical {
+    background: #8e44ad;
+  }
+</style>
+{% endblock %} {% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+  <div class="sidebar-header">
+    <i
+      class="fas fa-crown"
+      style="color: #f39c12; font-size: 2rem; margin-bottom: 10px"
+    ></i>
+    <h3>Admin Control Center</h3>
+    <p>Import CSV Data</p>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li>
+      <a href="{% url 'sms:admin_dashboard' %}">
+        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_students' %}">
+        <i class="fas fa-users"></i> Manage Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:course_analysis' %}">
+        <i class="fas fa-chart-line"></i> Course Analysis
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:performance_trends' %}">
+        <i class="fas fa-chart-area"></i> Performance Trends
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:import_csv_data' %}" class="active">
+        <i class="fas fa-file-import"></i> Import CSV Data
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:at_risk_students' %}">
+        <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_grades' %}">
+        <i class="fas fa-user-check"></i> Manage Grades
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:admin_panel' %}">
+        <i class="fas fa-cog"></i> Admin Panel
+      </a>
+    </li>
+  </ul>
+
+  <div style="position: absolute; bottom: 20px; left: 20px; right: 20px">
+    <a
+      href="{% url 'sms:logout' %}"
+      style="color: #e74c3c; text-decoration: none"
+    >
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <!-- Top Navbar -->
+  <div class="top-navbar">
+    <h1><i class="fas fa-file-import"></i> Import CSV Data</h1>
+    <div class="user-info">
+      <span>Bulk import students and grades with AI predictions</span>
+    </div>
+  </div>
+
+  <!-- Import Options -->
+  <div class="form-container">
+    <div class="row">
+      <!-- Students Import -->
+      <div class="col-md-6">
+        <div class="import-card">
+          <div class="import-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h4>Import Students</h4>
+          <p class="text-muted">
+            Upload a CSV file with student information to add multiple students
+            at once.
+          </p>
+
+          <form method="post" enctype="multipart/form-data" class="mt-4">
+            {% csrf_token %}
+            <input type="hidden" name="import_type" value="students" />
+
+            <div class="upload-area" id="studentUploadArea">
+              <i
+                class="fas fa-cloud-upload-alt"
+                style="font-size: 3rem; color: #3498db; margin-bottom: 15px"
+              ></i>
+              <h5>Drop CSV file here or click to browse</h5>
+              <input
+                type="file"
+                name="csv_file"
+                accept=".csv"
+                class="form-control"
+                style="display: none"
+                id="studentFileInput"
+              />
+              <p class="text-muted mt-3">Supported format: CSV with headers</p>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="fas fa-upload"></i> Import Students
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Grades Import -->
+      <div class="col-md-6">
+        <div class="import-card">
+          <div class="import-icon">
+            <i class="fas fa-brain" style="color: #e74c3c"></i>
+          </div>
+          <h4>Import Grades</h4>
+          <p class="text-muted">
+            Upload grades and get AI-powered performance predictions
+            automatically.
+          </p>
+
+          <form method="post" enctype="multipart/form-data" class="mt-4">
+            {% csrf_token %}
+            <input type="hidden" name="import_type" value="grades" />
+
+            <div class="upload-area" id="gradeUploadArea">
+              <i
+                class="fas fa-brain"
+                style="font-size: 3rem; color: #e74c3c; margin-bottom: 15px"
+              ></i>
+              <h5>Drop CSV file here or click to browse</h5>
+              <input
+                type="file"
+                name="csv_file"
+                accept=".csv"
+                class="form-control"
+                style="display: none"
+                id="gradeFileInput"
+              />
+              <p class="text-muted mt-3">Includes AI performance predictions</p>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg">
+              <i class="fas fa-magic"></i> Import with AI Analysis
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sample Files -->
+  <div class="form-container">
+    <div class="alert alert-info">
+      <h5><i class="fas fa-info-circle"></i> Sample CSV Files Available</h5>
+      <div class="row">
+        <div class="col-md-6">
+          <h6>For Testing:</h6>
+          <ul>
+            <li>
+              <strong>sample_students_large.csv</strong> - 15 diverse students
+            </li>
+            <li>
+              <strong>sample_grades_comprehensive.csv</strong> - 26 varied
+              grades
+            </li>
+            <li>
+              <strong>sample_performance_tracking.csv</strong> - Performance
+              trends
+            </li>
+            <li class="text-primary">
+              <strong><i class="fas fa-brain"></i> ai_powered_csv_1.csv</strong>
+              - AI Performance Analysis (Excellent/Best)
+            </li>
+            <li class="text-primary">
+              <strong><i class="fas fa-brain"></i> ai_powered_csv_2.csv</strong>
+              - AI Performance Analysis (Best/Better)
+            </li>
+            <li class="text-primary">
+              <strong><i class="fas fa-brain"></i> ai_powered_csv_3.csv</strong>
+              - AI Performance Analysis (Better/Good)
+            </li>
+            <li class="text-primary">
+              <strong><i class="fas fa-brain"></i> ai_powered_csv_4.csv</strong>
+              - AI Performance Analysis (Mixed Performance)
+            </li>
+            <li class="text-primary">
+              <strong><i class="fas fa-brain"></i> ai_powered_csv_5.csv</strong>
+              - AI Performance Analysis (All Categories)
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h6>CSV Format Requirements:</h6>
+          <ul>
+            <li>
+              <strong>Students:</strong> username, email, first_name, last_name, student_id,
+              department_code, year, enrollment_date, phone (optional)
+            </li>
+            <li><strong>Grades:</strong> student_id, course_code, marks_obtained, exam_date (optional)</li>
+            <li><strong>Date format:</strong> YYYY-MM-DD</li>
+            <li><strong>Department codes:</strong> CS (Computer Science), EE (Electrical Engineering), ME (Mechanical Engineering)</li>
+            <li>
+              Grade import will generate AI performance predictions automatically
+            </li>
+            <li><strong>Improved error handling:</strong> Detailed error messages for validation failures</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <!-- Student CSV Statistics -->
+  {% if show_stats %}
+  <div class="form-container">
+    <h3><i class="fas fa-chart-bar"></i> Student CSV Statistics</h3>
+    <ul class="list-group mb-3">
+      <li class="list-group-item">Mean (Year): <strong>{{ stats.mean }}</strong></li>
+      <li class="list-group-item">Median (Year): <strong>{{ stats.median }}</strong></li>
+      <li class="list-group-item">Mode (Year): <strong>{% for m in stats.mode %}{{ m }}{% if not forloop.last %}, {% endif %}{% endfor %}</strong></li>
+    </ul>
+  </div>
+  {% endif %}
+  {% if messages %} {% for message in messages %}
+  <div class="form-container">
+    <div
+      class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}"
+    >
+      <i
+        class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}times-circle{% else %}info-circle{% endif %}"
+      ></i>
+      {{ message }}
+    </div>
+  </div>
+  {% endfor %} {% endif %}
+
+  <!-- Performance Predictions -->
+  {% if show_predictions %}
+  <div class="form-container">
+    <h3><i class="fas fa-brain"></i> AI Performance Predictions</h3>
+    <p class="text-muted">
+      Based on the imported grade data, here are the performance predictions for
+      each student:
+    </p>
+
+    {% for pred in predictions %}
+    <div class="prediction-card">
+      <div class="row align-items-center">
+        <div class="col-md-2">
+          <h5>{{ pred.student.user.get_full_name }}</h5>
+          <small>{{ pred.student.student_id }}</small>
+        </div>
+        <div class="col-md-1">
+          <strong>Grade:</strong><br />
+          <span class="badge bg-light text-dark"
+            >{{ pred.current_grade.grade }}</span
+          >
+        </div>
+        <div class="col-md-1">
+          <strong>GPA:</strong><br />
+          <span class="badge bg-light text-dark"
+            >{{ pred.current_grade.gpa }}</span
+          >
+        </div>
+        <div class="col-md-2">
+          <strong>🤖 AI Prediction:</strong><br />
+          <span
+            class="badge bg-{% if pred.prediction.ai_prediction == 'Excellent' %}success{% elif pred.prediction.ai_prediction == 'Best' %}primary{% elif pred.prediction.ai_prediction == 'Better' %}warning{% else %}danger{% endif %}"
+            style="font-size: 0.9rem"
+            >{{ pred.prediction.ai_prediction }}</span
+          >
+        </div>
+        <div class="col-md-2">
+          <strong>Predicted GPA:</strong><br />
+          <span
+            class="badge bg-{% if pred.prediction.predicted_gpa >= 3.5 %}success{% elif pred.prediction.predicted_gpa >= 3.0 %}primary{% elif pred.prediction.predicted_gpa >= 2.5 %}warning{% else %}danger{% endif %}"
+            >{{ pred.prediction.predicted_gpa }}</span
+          >
+        </div>
+        <div class="col-md-1">
+          <strong>Method:</strong><br />
+          <span class="badge bg-info" style="font-size: 0.7rem">
+            {% if 'K-NN' in pred.prediction.method or 'ML' in pred.prediction.method %}
+              🧠 ML
+            {% else %}
+              📊 Rule
+            {% endif %}
+          </span>
+        </div>
+        <div class="col-md-2">
+          <strong>Risk Level:</strong><br />
+          <span class="badge bg-{% if pred.prediction.risk_level == 'Very Low' or pred.prediction.risk_level == 'Low' %}success{% elif pred.prediction.risk_level == 'Medium' %}warning{% else %}danger{% endif %}" style="font-size: 0.8rem">
+            {{ pred.prediction.risk_level|default:"N/A" }}
+          </span>
+        </div>
+        <div class="col-md-1">
+          <strong>Confidence:</strong><br />
+          <span class="badge bg-info">{{ pred.prediction.confidence }}</span>
+        </div>
+        <div class="col-md-1">
+          <i
+            class="fas fa-{% if pred.prediction.risk_level == 'Very Low' or pred.prediction.risk_level == 'Low' %}check-circle text-success{% elif pred.prediction.risk_level == 'Medium' %}exclamation-circle text-warning{% elif pred.prediction.risk_level == 'High' %}times-circle text-danger{% else %}skull text-danger{% endif %}"
+            style="font-size: 1.5rem"
+          ></i>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <small
+            ><strong>Recommendation:</strong>
+             {{ pred.prediction.recommendation }}</small
+          >
+        </div>
+        <div class="col-md-6">
+          <small><strong>Analysis Factors:</strong></small>
+          <ul class="small mb-0">
+            {% for factor in pred.prediction.factors %}
+            <li>{{ factor }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% if pred.prediction.consistency_score %}
+      <div class="row mt-2">
+        <div class="col-12">
+          <div class="progress" style="height: 8px">
+            <div
+              class="progress-bar bg-{% if pred.prediction.consistency_score >= 0.8 %}success{% elif pred.prediction.consistency_score >= 0.6 %}warning{% else %}danger{% endif %}"
+              style="width: {% widthratio pred.prediction.consistency_score 1 100 %}%"></div>
+          </div>
+          <small class="text-muted"
+            >Performance Consistency: 
+            {{ pred.prediction.consistency_score|floatformat:2 }}</small
+          >
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="text-center mt-4">
+      <a href="{% url 'sms:import_csv_data' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Import More Data
+      </a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    setupFileUpload("studentUploadArea", "studentFileInput");
+    setupFileUpload("gradeUploadArea", "gradeFileInput");
+
+    function setupFileUpload(areaId, inputId) {
+      const uploadArea = document.getElementById(areaId);
+      const fileInput = document.getElementById(inputId);
+
+      uploadArea.addEventListener("click", () => fileInput.click());
+
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+      });
+
+      uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("dragover");
+      });
+
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          fileInput.files = files;
+          updateFileName(areaId, files[0].name);
+        }
+      });
+
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          updateFileName(areaId, e.target.files[0].name);
+        }
+      });
+    }
+
+    function updateFileName(areaId, fileName) {
+      const uploadArea = document.getElementById(areaId);
+      const h5 = uploadArea.querySelector("h5");
+      h5.textContent = `Selected: ${fileName}`;
+      h5.style.color = "#27ae60";
+    }
+  });
+</script>
+{% endblock %}

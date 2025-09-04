@@ -1,0 +1,9 @@
+username,email,first_name,last_name,student_id,department_code,year,enrollment_date,phone
+michael.garcia,michael.garcia@university.edu,Michael,Garcia,ME2025016,ME,1,2025-01-15,555-1016
+sarah.martinez,sarah.martinez@university.edu,Sarah,Martinez,ME2025017,ME,1,2025-01-15,555-1017
+david.rodriguez,david.rodriguez@university.edu,David,Rodriguez,ME2025018,ME,2,2024-01-15,555-1018
+jessica.lopez,jessica.lopez@university.edu,Jessica,Lopez,ME2025019,ME,2,2024-01-15,555-1019
+christopher.hernandez,christopher.hernandez@university.edu,Christopher,Hernandez,ME2025020,ME,3,2023-01-15,555-1020
+amanda.gonzalez,amanda.gonzalez@university.edu,Amanda,Gonzalez,ME2025021,ME,3,2023-01-15,555-1021
+matthew.perez,matthew.perez@university.edu,Matthew,Perez,ME2025022,ME,4,2022-01-15,555-1022
+ashley.sanchez,ashley.sanchez@university.edu,Ashley,Sanchez,ME2025023,ME,4,2022-01-15,555-1023

@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Course Analysis - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #f8f9fa;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 400px;
+        margin: 20px 0;
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .course-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .course-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .course-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    
+    .stat-label {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-header">
+        <i class="fas fa-crown" style="color: #f39c12; font-size: 2rem; margin-bottom: 10px;"></i>
+        <h3>Admin Control Center</h3>
+        <p>Course Analysis</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li><a href="{% url 'sms:admin_dashboard' %}">
+            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+        </a></li>
+        <li><a href="{% url 'sms:manage_students' %}">
+            <i class="fas fa-users"></i> Manage Students
+        </a></li>
+        <li><a href="{% url 'sms:course_analysis' %}" class="active">
+            <i class="fas fa-chart-line"></i> Course Analysis
+        </a></li>
+        <li><a href="{% url 'sms:performance_trends' %}">
+            <i class="fas fa-chart-area"></i> Performance Trends
+        </a></li>
+        <li><a href="{% url 'sms:import_csv_data' %}">
+            <i class="fas fa-file-import"></i> Import CSV Data
+        </a></li>
+        <li><a href="{% url 'sms:at_risk_students' %}">
+            <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+        </a></li>
+        <li><a href="{% url 'sms:manage_grades' %}">
+            <i class="fas fa-user-check"></i> Manage Grades
+        </a></li>
+        <li><a href="{% url 'sms:admin_panel' %}">
+            <i class="fas fa-cog"></i> Admin Panel
+        </a></li>
+    </ul>
+    
+    <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
+        <a href="{% url 'sms:logout' %}" style="color: #e74c3c; text-decoration: none;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <h1><i class="fas fa-chart-line"></i> Course Analysis</h1>
+        <div class="user-info">
+            <select class="form-select" id="courseSelect" style="width: 250px;">
+                <option value="">All Courses Overview</option>
+                {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.subject.name }} - Year {{ course.year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    
+    <!-- Overall Performance Chart -->
+    <div class="form-container">
+        <div class="chart-container">
+            <h4><i class="fas fa-chart-area"></i> Course Performance Overview</h4>
+            <canvas id="courseOverviewChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Individual Course Analysis -->
+    <div class="form-container">
+        <div class="chart-container" id="individualCourseChart" style="display: none;">
+            <h4><i class="fas fa-users"></i> <span id="courseTitle">Course Performance</span></h4>
+            <canvas id="courseStudentsChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Course Statistics Cards -->
+    <div class="form-container">
+        <h3><i class="fas fa-graduation-cap"></i> Course Statistics</h3>
+        <div class="row">
+            {% for data in course_data %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="course-card">
+                    <h5>{{ data.course.subject.name }}</h5>
+                    <p class="text-muted">{{ data.course.subject.code }} - {{ data.course.subject.department.name }}</p>
+                    
+                    <div class="course-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">{{ data.total_students }}</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">{{ data.avg_marks }}</div>
+                            <div class="stat-label">Avg Marks</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">{{ data.avg_gpa }}</div>
+                            <div class="stat-label">Avg GPA</div>
+                        </div>
+                    </div>
+                    
+                    {% if data.grade_distribution %}
+                    <div class="mt-3">
+                        <h6>Grade Distribution:</h6>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for grade, count in data.grade_distribution.items %}
+                                <span class="badge bg-{% if grade == 'A+' or grade == 'A' %}success{% elif grade == 'B+' or grade == 'B' %}primary{% elif grade == 'C+' or grade == 'C' %}warning{% else %}danger{% endif %}">
+                                    {{ grade }}: {{ count }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No course data available. Add some grades to see analysis.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const courseSelect = document.getElementById('courseSelect');
+    const individualChart = document.getElementById('individualCourseChart');
+    const courseTitle = document.getElementById('courseTitle');
+    
+    let overviewChart, studentsChart;
+    
+    // Load overall course performance chart
+    loadOverviewChart();
+    
+    // Course selection handler
+    courseSelect.addEventListener('change', function() {
+        if (this.value) {
+            loadCourseStudentsChart(this.value);
+            individualChart.style.display = 'block';
+        } else {
+            individualChart.style.display = 'none';
+        }
+    });
+    
+    function loadOverviewChart() {
+        fetch('{% url "sms:course_analysis_data" %}')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('courseOverviewChart').getContext('2d');
+                
+                if (overviewChart) {
+                    overviewChart.destroy();
+                }
+                
+                overviewChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.courses.map(c => c.course_name),
+                        datasets: [{
+                            label: 'Average Marks',
+                            data: data.courses.map(c => c.avg_marks),
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading overview chart:', error);
+            });
+    }
+    
+    function loadCourseStudentsChart(courseId) {
+        fetch(`{% url "sms:course_analysis_data" %}?course_id=${courseId}`)
+            .then(response => response.json())
+            .then(data => {
+                courseTitle.textContent = `${data.course_name} - Student Performance`;
+                
+                const ctx = document.getElementById('courseStudentsChart').getContext('2d');
+                
+                if (studentsChart) {
+                    studentsChart.destroy();
+                }
+                
+                studentsChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.students,
+                        datasets: [{
+                            label: 'Marks Obtained',
+                            data: data.marks,
+                            borderColor: 'rgba(231, 76, 60, 1)',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: 'rgba(231, 76, 60, 1)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: data.max_marks,
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading course students chart:', error);
+            });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - Student Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .login-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        position: relative;
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .login-header h1 {
+        color: #333;
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .login-header .subtitle {
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+    
+    .user-type-selector {
+        display: flex;
+        margin-bottom: 30px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 2px solid #e9ecef;
+    }
+    
+    .user-type-btn {
+        flex: 1;
+        padding: 15px;
+        background: #f8f9fa;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        color: #666;
+    }
+    
+    .user-type-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .user-type-btn i {
+        margin-right: 8px;
+        font-size: 1.1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        color: #333;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .login-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+    
+    .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #999;
+        cursor: pointer;
+    }
+    
+    .graduation-cap {
+        font-size: 3rem;
+        color: #667eea;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <button class="close-btn" onclick="window.history.back()">
+        <i class="fas fa-times"></i>
+    </button>
+    
+    <div class="login-header">
+        <i class="fas fa-graduation-cap graduation-cap"></i>
+        <h1>Student Management Portal</h1>
+        <p class="subtitle">Login Here</p>
+    </div>
+    
+    {% if error %}
+    <div class="error-message">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{ error }}
+    </div>
+    {% endif %}
+    
+    <form method="post" id="loginForm">
+        {% csrf_token %}
+        
+        <div class="user-type-selector">
+            <button type="button" class="user-type-btn active" data-type="student">
+                <i class="fas fa-user-graduate"></i>
+                Student
+            </button>
+            <button type="button" class="user-type-btn" data-type="admin">
+                <i class="fas fa-user-cog"></i>
+                Admin
+            </button>
+        </div>
+        
+        <input type="hidden" name="user_type" id="user_type" value="student">
+        
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" 
+                   placeholder="Enter your username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" 
+                   placeholder="Enter your password" required>
+        </div>
+        
+        <button type="submit" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i>
+            Login
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userTypeBtns = document.querySelectorAll('.user-type-btn');
+    const userTypeInput = document.getElementById('user_type');
+    
+    userTypeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all buttons
+            userTypeBtns.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Update hidden input value
+            userTypeInput.value = this.dataset.type;
+        });
+    });
+});
+</script>
+{% endblock %}

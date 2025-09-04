@@ -1,0 +1,282 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Admin Control
+Center - Student Management System{% endblock %} {% block extra_css %}
+<style>
+  body {
+    background: #f8f9fa;
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+</style>
+{% endblock %} {% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+  <div class="sidebar-header">
+    <i
+      class="fas fa-crown"
+      style="color: #f39c12; font-size: 2rem; margin-bottom: 10px"
+    ></i>
+    <h3>Admin Control Center</h3>
+    <p>
+      Welcome back, admin! Manage your institution with powerful analytics and
+      insights.
+    </p>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li>
+      <a href="{% url 'sms:admin_dashboard' %}" class="active">
+        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_students' %}">
+        <i class="fas fa-users"></i> Manage Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:course_analysis' %}">
+        <i class="fas fa-chart-line"></i> Course Analysis
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:performance_trends' %}">
+        <i class="fas fa-chart-area"></i> Performance Trends
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:import_csv_data' %}">
+        <i class="fas fa-file-import"></i> Import CSV Data
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:at_risk_students' %}">
+        <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:manage_grades' %}">
+        <i class="fas fa-user-check"></i> Manage Grades
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sms:admin_panel' %}">
+        <i class="fas fa-cog"></i> Admin Panel
+      </a>
+    </li>
+  </ul>
+
+  <div style="position: absolute; bottom: 20px; left: 20px; right: 20px">
+    <a
+      href="{% url 'sms:logout' %}"
+      style="color: #e74c3c; text-decoration: none"
+    >
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <!-- Top Navbar -->
+  <div class="top-navbar">
+    <h1>
+      <i class="fas fa-crown" style="color: #f39c12"></i> Admin Control Center
+    </h1>
+    <div class="user-info">
+      <span>Last Login: Aug 14, 15:40</span>
+      <div class="user-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Stats -->
+  <div class="dashboard-stats">
+    <div class="stat-card students">
+      <div class="stat-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <div class="stat-number">{{ total_students }}</div>
+      <div class="stat-label">Total Students</div>
+    </div>
+
+    <div class="stat-card courses">
+      <div class="stat-icon">
+        <i class="fas fa-book"></i>
+      </div>
+      <div class="stat-number">{{ total_courses }}</div>
+      <div class="stat-label">Total Courses</div>
+    </div>
+
+    <div class="stat-card subjects">
+      <div class="stat-icon">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
+      <div class="stat-number">{{ total_subjects }}</div>
+      <div class="stat-label">Total Subjects</div>
+    </div>
+
+    <div class="stat-card grades">
+      <div class="stat-icon">
+        <i class="fas fa-chart-bar"></i>
+      </div>
+      <div class="stat-number">{{ total_grades }}</div>
+      <div class="stat-label">Total Grades</div>
+    </div>
+
+    <div class="stat-card a-grades">
+      <div class="stat-icon">
+        <i class="fas fa-star"></i>
+      </div>
+      <div class="stat-number">{{ a_grades }}</div>
+      <div class="stat-label">A Grades</div>
+    </div>
+
+    <div class="stat-card avg-gpa">
+      <div class="stat-icon">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="stat-number">{{ avg_gpa }}</div>
+      <div class="stat-label">Avg GPA</div>
+    </div>
+
+    <div class="stat-card failing-grades">
+      <div class="stat-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="stat-number">{{ failing_grades }}</div>
+      <div class="stat-label">Failing Grades</div>
+    </div>
+  </div>
+
+  <!-- Enhanced Features -->
+  <div class="enhanced-features">
+    <h3>
+      <i class="fas fa-rocket" style="color: #27ae60"></i> Enhanced Features
+    </h3>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon" style="color: #3498db">
+          <i class="fas fa-brain"></i>
+        </div>
+        <h4>ML Predictions</h4>
+        <p>AI-powered grade predictions</p>
+        <a href="{% url 'sms:import_csv_data' %}" class="btn btn-primary btn-sm"
+          >Try ML Analysis</a
+        >
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon" style="color: #e74c3c">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h4>Quick Actions</h4>
+        <p>Streamline your workflow</p>
+        <div>
+          <a href="{% url 'sms:manage_grades' %}" class="btn btn-success btn-sm"
+            >Manage Grades</a
+          >
+          <a
+            href="{% url 'sms:at_risk_students' %}"
+            class="btn btn-warning btn-sm"
+            >At-Risk Students</a
+          >
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon" style="color: #f39c12">
+          <i class="fas fa-tasks"></i>
+        </div>
+        <h4>Assignment Tracking</h4>
+        <p>Monitor assignments</p>
+        <a
+          href="{% url 'sms:assignment_tracking' %}"
+          class="btn btn-info btn-sm"
+          >View Assignments</a
+        >
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon" style="color: #27ae60">
+          <i class="fas fa-download"></i>
+        </div>
+        <h4>Data Export</h4>
+        <p>Export to Excel/CSV</p>
+        <a href="{% url 'sms:data_export' %}" class="btn btn-success btn-sm"
+          >Export Data</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Sections -->
+  <div class="recent-sections">
+    <div class="recent-card">
+      <h4>
+        <i class="fas fa-users" style="color: #3498db"></i> Recent Students
+      </h4>
+      <table class="recent-table">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Year</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in recent_students %}
+          <tr>
+            <td>{{ student.student_id }}</td>
+            <td>{{ student.user.get_full_name }}</td>
+            <td>Year {{ student.year }}</td>
+            <td>
+              {% if student.is_active %}
+              <span class="badge bg-success">Active</span>
+              {% else %}
+              <span class="badge bg-danger">Inactive</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center">No students found</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recent-card">
+      <h4>
+        <i class="fas fa-chart-bar" style="color: #f39c12"></i> Recent Grades
+      </h4>
+      <table class="recent-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for grade in recent_grades %}
+          <tr>
+            <td>{{ grade.student.student_id }}</td>
+            <td>{{ grade.course.subject.name }}</td>
+            <td>
+              <span class="badge bg-primary">{{ grade.grade }}</span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="text-center">No grades found</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

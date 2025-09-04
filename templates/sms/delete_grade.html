@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Grade - {{ grade.student.user.get_full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #f8f9fa;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .delete-warning {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .grade-info-card {
+        background: white;
+        border: 2px solid #ff6b6b;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .grade-display {
+        text-align: center;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin: 20px 0;
+    }
+    
+    .grade-badge {
+        font-size: 2rem;
+        padding: 10px 20px;
+        border-radius: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-header">
+        <i class="fas fa-crown" style="color: #f39c12; font-size: 2rem; margin-bottom: 10px;"></i>
+        <h3>Admin Control Center</h3>
+        <p>Delete Grade</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li><a href="{% url 'sms:admin_dashboard' %}">
+            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+        </a></li>
+        <li><a href="{% url 'sms:manage_students' %}">
+            <i class="fas fa-users"></i> Manage Students
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-chart-line"></i> Course Analysis
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-trending-up"></i> Performance Trends
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-file-import"></i> Import CSV Data
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+        </a></li>
+        <li><a href="{% url 'sms:manage_grades' %}" class="active">
+            <i class="fas fa-user-check"></i> Manage Grades
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-cog"></i> Admin Panel
+        </a></li>
+    </ul>
+    
+    <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
+        <a href="{% url 'sms:logout' %}" style="color: #e74c3c; text-decoration: none;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <h1><i class="fas fa-trash"></i> Delete Grade</h1>
+        <div class="user-info">
+            <a href="{% url 'sms:manage_grades' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Grades
+            </a>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation -->
+    <div class="form-container">
+        <div class="delete-warning">
+            <h4><i class="fas fa-exclamation-triangle"></i> Warning: Permanent Deletion</h4>
+            <p class="mb-0">You are about to permanently delete this grade record. This action cannot be undone and will remove:</p>
+            <ul class="mt-2 mb-0">
+                <li>The grade entry from the student's academic record</li>
+                <li>Associated GPA calculation for this course</li>
+                <li>Any remarks or comments related to this grade</li>
+                <li>Historical performance data for this assessment</li>
+            </ul>
+        </div>
+        
+        <div class="grade-info-card">
+            <h5><i class="fas fa-chart-bar"></i> Grade Information</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Student ID:</strong> {{ grade.student.student_id }}</p>
+                    <p><strong>Student Name:</strong> {{ grade.student.user.get_full_name }}</p>
+                    <p><strong>Course:</strong> {{ grade.course.subject.name }}</p>
+                    <p><strong>Course Code:</strong> {{ grade.course.subject.code }}</p>
+                    <p><strong>Department:</strong> {{ grade.course.subject.department.name }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Marks Obtained:</strong> {{ grade.marks_obtained }}/{{ grade.course.max_marks }}</p>
+                    <p><strong>Percentage:</strong> {{ grade.marks_obtained|floatformat:1 }}%</p>
+                    <p><strong>Exam Date:</strong> {{ grade.exam_date|default:"N/A" }}</p>
+                    <p><strong>Created:</strong> {{ grade.created_at|date:"M d, Y" }}</p>
+                    <p><strong>Last Updated:</strong> {{ grade.updated_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+            
+            <div class="grade-display">
+                <h6>Current Grade & GPA</h6>
+                <span class="badge grade-badge bg-{% if grade.grade == 'A+' or grade.grade == 'A' %}success{% elif grade.grade == 'B+' or grade.grade == 'B' %}primary{% elif grade.grade == 'C+' or grade.grade == 'C' %}warning{% else %}danger{% endif %}">
+                    {{ grade.grade }}
+                </span>
+                <div class="mt-2">
+                    <strong>GPA: {{ grade.gpa }}</strong>
+                </div>
+            </div>
+            
+            {% if grade.remarks %}
+            <div class="mt-3">
+                <strong>Remarks:</strong>
+                <p class="text-muted">{{ grade.remarks }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="alert alert-danger">
+            <h6><i class="fas fa-info-circle"></i> Before you proceed:</h6>
+            <ul class="mb-0">
+                <li>Make sure you have backed up any important data</li>
+                <li>Consider editing the grade instead of deleting it</li>
+                <li>Verify this is the correct grade record</li>
+                <li>Ensure you have proper authorization for this action</li>
+                <li>Note that this will affect the student's overall GPA calculation</li>
+            </ul>
+        </div>
+        
+        <form method="post" id="deleteForm">
+            {% csrf_token %}
+            
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="confirmDelete" required>
+                <label class="form-check-label" for="confirmDelete">
+                    I understand that this action is permanent and cannot be undone
+                </label>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="confirmText" class="form-label">
+                    Type "DELETE GRADE" to confirm:
+                </label>
+                <input type="text" class="form-control" id="confirmText" placeholder="DELETE GRADE" required>
+            </div>
+            
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'sms:manage_grades' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <a href="{% url 'sms:edit_grade' grade.id %}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Edit Instead
+                </a>
+                <button type="submit" class="btn btn-danger" id="deleteBtn" disabled>
+                    <i class="fas fa-trash"></i> Delete Grade
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmCheckbox = document.getElementById('confirmDelete');
+    const confirmText = document.getElementById('confirmText');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const expectedText = 'DELETE GRADE';
+    
+    function checkFormValidity() {
+        const isChecked = confirmCheckbox.checked;
+        const isTextCorrect = confirmText.value === expectedText;
+        
+        deleteBtn.disabled = !(isChecked && isTextCorrect);
+        
+        if (isTextCorrect) {
+            confirmText.classList.remove('is-invalid');
+            confirmText.classList.add('is-valid');
+        } else if (confirmText.value.length > 0) {
+            confirmText.classList.remove('is-valid');
+            confirmText.classList.add('is-invalid');
+        } else {
+            confirmText.classList.remove('is-valid', 'is-invalid');
+        }
+    }
+    
+    confirmCheckbox.addEventListener('change', checkFormValidity);
+    confirmText.addEventListener('input', checkFormValidity);
+    
+    // Final confirmation before submission
+    document.getElementById('deleteForm').addEventListener('submit', function(e) {
+        if (!confirm('Are you absolutely sure you want to delete this grade? This action cannot be undone!')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

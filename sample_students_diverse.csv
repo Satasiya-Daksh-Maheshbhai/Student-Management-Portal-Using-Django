@@ -1,0 +1,16 @@
+student_id,first_name,last_name,email,department,year,parent_phone
+CS2024051,Alex,Thompson,alex.thompson@university.edu,Computer Science,1,+1-555-0151
+CS2024052,Maria,Rodriguez,maria.rodriguez@university.edu,Computer Science,2,+1-555-0152
+CS2024053,James,Lee,james.lee@university.edu,Computer Science,3,+1-555-0153
+CS2024054,Sophie,Chen,sophie.chen@university.edu,Computer Science,4,+1-555-0154
+CS2024055,Marcus,Johnson,marcus.johnson@university.edu,Computer Science,1,+1-555-0155
+EE2024056,Priya,Patel,priya.patel@university.edu,Electrical Engineering,2,+1-555-0156
+EE2024057,Carlos,Mendez,carlos.mendez@university.edu,Electrical Engineering,3,+1-555-0157
+EE2024058,Aisha,Williams,aisha.williams@university.edu,Electrical Engineering,1,+1-555-0158
+EE2024059,Ryan,O'Connor,ryan.oconnor@university.edu,Electrical Engineering,4,+1-555-0159
+EE2024060,Zara,Ahmed,zara.ahmed@university.edu,Electrical Engineering,2,+1-555-0160
+ME2024061,Lucas,Brown,lucas.brown@university.edu,Mechanical Engineering,1,+1-555-0161
+ME2024062,Emma,Davis,emma.davis@university.edu,Mechanical Engineering,3,+1-555-0162
+ME2024063,Noah,Wilson,noah.wilson@university.edu,Mechanical Engineering,2,+1-555-0163
+ME2024064,Olivia,Taylor,olivia.taylor@university.edu,Mechanical Engineering,4,+1-555-0164
+ME2024065,Ethan,Moore,ethan.moore@university.edu,Mechanical Engineering,1,+1-555-0165

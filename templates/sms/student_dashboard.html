@@ -1,0 +1,410 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Student Dashboard -
+{{ student.user.get_full_name }}{% endblock %} {% block extra_css %}
+<style>
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .student-navbar {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+
+  .student-navbar h1 {
+    color: white;
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  .student-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .student-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+  }
+
+  .dashboard-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .student-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .profile-section {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .profile-info h2 {
+    color: #2c3e50;
+    margin: 0 0 5px 0;
+    font-size: 1.8rem;
+  }
+
+  .profile-info p {
+    color: #7f8c8d;
+    margin: 2px 0;
+  }
+
+  .gpa-display {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    color: white;
+  }
+
+  .gpa-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .gpa-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  .performance-section h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 400px;
+    margin: 20px 0;
+  }
+
+  .grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  .grades-table th,
+  .grades-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+  }
+
+  .grades-table th {
+    background: #f8f9fa;
+    color: #2c3e50;
+    font-weight: 600;
+  }
+
+  .grades-table tr:hover {
+    background: #f8f9fa;
+  }
+
+  .grade-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .grade-A,
+  .grade-A\+ {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .grade-B,
+  .grade-B\+ {
+    background: #cce7ff;
+    color: #004085;
+  }
+
+  .grade-C,
+  .grade-C\+ {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .grade-F {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .logout-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .logout-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    text-decoration: none;
+  }
+</style>
+{% endblock %} {% block content %}
+<!-- Student Navbar -->
+<div class="student-navbar">
+  <h1><i class="fas fa-user-graduate"></i> Student Management Portal</h1>
+  <div class="student-info">
+    <span>Welcome, {{ student.user.get_full_name }}</span>
+    <div class="student-avatar">
+      {{ student.user.first_name.0 }}{{ student.user.last_name.0 }}
+    </div>
+    <a href="{% url 'sms:logout' %}" class="logout-btn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </div>
+</div>
+
+<!-- Dashboard Container -->
+<div class="dashboard-container">
+  <!-- Failing Grades Alert -->
+  {% if failing_count > 0 %}
+  <div
+    class="alert alert-danger alert-dismissible fade show mb-4"
+    role="alert"
+    style="
+      border-left: 5px solid #dc3545;
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    "
+  >
+    <div class="d-flex align-items-center">
+      <div class="me-3" style="font-size: 2rem">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="flex-grow-1">
+        <h5 class="alert-heading mb-2">
+          <i class="fas fa-exclamation-circle"></i>
+          {% if failing_count == 1 %}Academic Alert{% else %}Critical Academic
+          Alert{% endif %}
+        </h5>
+        <p class="mb-2">
+          {% if failing_count == 1 %} You have
+          <strong>{{ failing_count }} failing grade (F)</strong> that requires
+          immediate attention. {% else %} You have
+          <strong>{{ failing_count }} failing grades (F)</strong> that require
+          immediate attention. {% endif %}
+        </p>
+        <div class="failing-courses mb-2">
+          <strong>Affected Courses:</strong>
+          <ul class="mb-0 mt-1">
+            {% for grade in failing_grades %}
+            <li>
+              {{ grade.course.subject.name }} - Year {{ grade.course.year }},
+              Sem {{ grade.course.semester }} (Grade: {{ grade.grade }})
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <small>
+          <i class="fas fa-info-circle"></i>
+          Please contact your academic advisor or course instructor immediately
+          to discuss improvement strategies.
+        </small>
+      </div>
+      <div class="text-center" style="min-width: 80px">
+        <div style="font-size: 2.5rem; font-weight: bold">
+          {{ failing_count }}
+        </div>
+        <div style="font-size: 0.9rem">
+          Failing Grade{{ failing_count|pluralize }}
+        </div>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  {% endif %}
+
+  <!-- Profile Section -->
+  <div class="student-card">
+    <div class="profile-section">
+      <div class="profile-avatar">
+        {{ student.user.first_name.0 }}{{ student.user.last_name.0 }}
+      </div>
+      <div class="profile-info">
+        <h2>{{ student.user.get_full_name }}</h2>
+        <p><strong>Student ID:</strong> {{ student.student_id }}</p>
+        <p><strong>Department:</strong> {{ student.department.name }}</p>
+        <p><strong>Year:</strong> {{ student.get_year_display }}</p>
+        <p><strong>Email:</strong> {{ student.user.email }}</p>
+      </div>
+      <div class="gpa-display">
+        <div class="gpa-number">{{ avg_gpa }}</div>
+        <div class="gpa-label">Overall GPA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Performance Chart -->
+  <div class="student-card">
+    <h3>
+      <i class="fas fa-chart-area" style="color: #667eea"></i> Performance
+      Analytics
+    </h3>
+    <div class="chart-container">
+      <canvas id="performanceChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Grades Table -->
+  <div class="student-card">
+    <h3>
+      <i class="fas fa-table" style="color: #667eea"></i> Academic Records
+    </h3>
+    <table class="grades-table">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Course Code</th>
+          <th>Credits</th>
+          <th>Marks Obtained</th>
+          <th>Grade</th>
+          <th>GPA</th>
+          <th>Exam Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for grade in grades %}
+        <tr>
+          <td>{{ grade.course.subject.name }}</td>
+          <td>{{ grade.course.subject.code }}</td>
+          <td>{{ grade.course.subject.credits }}</td>
+          <td>{{ grade.marks_obtained }}/{{ grade.course.max_marks }}</td>
+          <td>
+            <span class="grade-badge grade-{{ grade.grade }}"
+              >{{ grade.grade }}</span
+            >
+          </td>
+          <td>{{ grade.gpa }}</td>
+          <td>{{ grade.exam_date|default:"N/A" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center">No grades available yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Fetch performance data and create chart
+    fetch('{% url "sms:student_performance" %}')
+      .then((response) => response.json())
+      .then((data) => {
+        const ctx = document
+          .getElementById("performanceChart")
+          .getContext("2d");
+
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: data.subjects,
+            datasets: [
+              {
+                label: "Marks Obtained",
+                data: data.marks,
+                borderColor: "rgba(102, 126, 234, 1)",
+                backgroundColor: "rgba(102, 126, 234, 0.1)",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: "rgba(102, 126, 234, 1)",
+                pointBorderColor: "#fff",
+                pointBorderWidth: 2,
+                pointRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: true,
+                position: "top",
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                grid: {
+                  color: "rgba(0,0,0,0.1)",
+                },
+              },
+              x: {
+                grid: {
+                  color: "rgba(0,0,0,0.1)",
+                },
+              },
+            },
+          },
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching performance data:", error);
+      });
+  });
+</script>
+{% endblock %}

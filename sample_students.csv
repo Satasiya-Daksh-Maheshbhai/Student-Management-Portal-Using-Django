@@ -1,0 +1,5 @@
+username,email,first_name,last_name,student_id,department_code,year,enrollment_date,phone
+alice.johnson,alice.johnson@example.com,Alice,Johnson,CS2024003,CS,1,2024-08-01,123-456-7894
+bob.wilson,bob.wilson@example.com,Bob,Wilson,CS2024004,CS,2,2023-08-01,123-456-7895
+carol.davis,carol.davis@example.com,Carol,Davis,EE2024001,EE,1,2024-08-01,123-456-7896
+david.brown,david.brown@example.com,David,Brown,EE2024002,EE,2,2023-08-01,123-456-7897

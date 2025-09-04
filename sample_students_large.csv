@@ -1,0 +1,16 @@
+username,email,first_name,last_name,student_id,department_code,year,enrollment_date,phone
+alice.johnson,alice.johnson@example.com,Alice,Johnson,CS2024003,CS,1,2024-08-01,123-456-7894
+bob.wilson,bob.wilson@example.com,Bob,Wilson,CS2024004,CS,2,2023-08-01,123-456-7895
+carol.davis,carol.davis@example.com,Carol,Davis,EE2024001,EE,1,2024-08-01,123-456-7896
+david.brown,david.brown@example.com,David,Brown,EE2024002,EE,2,2023-08-01,123-456-7897
+emma.garcia,emma.garcia@example.com,Emma,Garcia,CS2024005,CS,1,2024-08-01,123-456-7898
+frank.miller,frank.miller@example.com,Frank,Miller,CS2024006,CS,3,2022-08-01,123-456-7899
+grace.lee,grace.lee@example.com,Grace,Lee,EE2024003,EE,1,2024-08-01,123-456-7900
+henry.taylor,henry.taylor@example.com,Henry,Taylor,EE2024004,EE,2,2023-08-01,123-456-7901
+iris.anderson,iris.anderson@example.com,Iris,Anderson,CS2024007,CS,2,2023-08-01,123-456-7902
+jack.thomas,jack.thomas@example.com,Jack,Thomas,CS2024008,CS,1,2024-08-01,123-456-7903
+kelly.jackson,kelly.jackson@example.com,Kelly,Jackson,EE2024005,EE,3,2022-08-01,123-456-7904
+liam.white,liam.white@example.com,Liam,White,CS2024009,CS,2,2023-08-01,123-456-7905
+maya.harris,maya.harris@example.com,Maya,Harris,EE2024006,EE,1,2024-08-01,123-456-7906
+noah.martin,noah.martin@example.com,Noah,Martin,CS2024010,CS,3,2022-08-01,123-456-7907
+olivia.clark,olivia.clark@example.com,Olivia,Clark,EE2024007,EE,2,2023-08-01,123-456-7908

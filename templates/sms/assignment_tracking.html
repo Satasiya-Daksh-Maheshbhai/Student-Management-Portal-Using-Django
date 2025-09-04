@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Assignment Tracking - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #f8f9fa;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .assignment-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-left: 5px solid;
+        transition: transform 0.3s ease;
+    }
+    
+    .assignment-card:hover {
+        transform: translateY(-3px);
+    }
+    
+    .assignment-completed {
+        border-left-color: #27ae60;
+    }
+    
+    .assignment-pending {
+        border-left-color: #e74c3c;
+    }
+    
+    .assignment-progress {
+        border-left-color: #f39c12;
+    }
+    
+    .status-badge {
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: white;
+    }
+    
+    .status-completed { background: #27ae60; }
+    .status-pending { background: #e74c3c; }
+    .status-progress { background: #f39c12; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-header">
+        <i class="fas fa-crown" style="color: #f39c12; font-size: 2rem; margin-bottom: 10px;"></i>
+        <h3>Admin Control Center</h3>
+        <p>Assignment Tracking</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li><a href="{% url 'sms:admin_dashboard' %}">
+            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+        </a></li>
+        <li><a href="{% url 'sms:manage_students' %}">
+            <i class="fas fa-users"></i> Manage Students
+        </a></li>
+        <li><a href="{% url 'sms:course_analysis' %}">
+            <i class="fas fa-chart-line"></i> Course Analysis
+        </a></li>
+        <li><a href="{% url 'sms:performance_trends' %}">
+            <i class="fas fa-chart-area"></i> Performance Trends
+        </a></li>
+        <li><a href="{% url 'sms:import_csv_data' %}">
+            <i class="fas fa-file-import"></i> Import CSV Data
+        </a></li>
+        <li><a href="{% url 'sms:at_risk_students' %}">
+            <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+        </a></li>
+        <li><a href="{% url 'sms:manage_grades' %}">
+            <i class="fas fa-user-check"></i> Manage Grades
+        </a></li>
+        <li><a href="{% url 'sms:admin_panel' %}">
+            <i class="fas fa-cog"></i> Admin Panel
+        </a></li>
+    </ul>
+    
+    <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
+        <a href="{% url 'sms:logout' %}" style="color: #e74c3c; text-decoration: none;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <h1><i class="fas fa-tasks"></i> Assignment Tracking</h1>
+        <div class="user-info">
+            <span class="badge bg-primary">{{ total_assignments }} Total Assignments</span>
+        </div>
+    </div>
+    
+    <!-- Assignment Statistics -->
+    <div class="form-container">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stat-card assignment-completed">
+                    <div class="stat-icon" style="color: #27ae60;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-number">{{ completed_assignments }}</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="stat-card assignment-pending">
+                    <div class="stat-icon" style="color: #e74c3c;">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-number">{{ pending_assignments }}</div>
+                    <div class="stat-label">Needs Attention</div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="stat-card assignment-progress">
+                    <div class="stat-icon" style="color: #f39c12;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-number">{{ total_assignments }}</div>
+                    <div class="stat-label">Total Assignments</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Assignments List -->
+    <div class="form-container">
+        <h3><i class="fas fa-list"></i> Assignment Overview</h3>
+        
+        {% if assignments %}
+            {% for assignment in assignments %}
+            <div class="assignment-card assignment-{% if assignment.grade == 'F' %}pending{% else %}completed{% endif %}">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <h5>{{ assignment.course.subject.name }}</h5>
+                        <p class="text-muted mb-1">{{ assignment.course.subject.code }}</p>
+                        <p class="text-muted mb-0">{{ assignment.course.subject.department.name }}</p>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <strong>Student:</strong><br>
+                        <span>{{ assignment.student.user.get_full_name }}</span><br>
+                        <small class="text-muted">{{ assignment.student.student_id }}</small>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <strong>Score:</strong><br>
+                        <span class="h5">{{ assignment.marks_obtained }}/{{ assignment.course.max_marks }}</span>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <strong>Grade:</strong><br>
+                        <span class="badge bg-{% if assignment.grade == 'A+' or assignment.grade == 'A' %}success{% elif assignment.grade == 'B+' or assignment.grade == 'B' %}primary{% elif assignment.grade == 'C+' or assignment.grade == 'C' %}warning{% else %}danger{% endif %}">
+                            {{ assignment.grade }}
+                        </span>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <strong>Status:</strong><br>
+                        <span class="status-badge status-{% if assignment.grade == 'F' %}pending{% else %}completed{% endif %}">
+                            {% if assignment.grade == 'F' %}
+                                Needs Review
+                            {% else %}
+                                Completed
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="col-md-1">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                Actions
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'sms:edit_grade' assignment.id %}">
+                                    <i class="fas fa-edit"></i> Edit Grade
+                                </a></li>
+                                <li><a class="dropdown-item" href="#" onclick="contactStudent('{{ assignment.student.user.email }}')">
+                                    <i class="fas fa-envelope"></i> Contact Student
+                                </a></li>
+                                {% if assignment.grade == 'F' %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-warning" href="#">
+                                    <i class="fas fa-exclamation-triangle"></i> Requires Attention
+                                </a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i> 
+                                    Exam Date: {{ assignment.exam_date|default:"Not specified" }}
+                                </small>
+                            </div>
+                            <div>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock"></i> 
+                                    Submitted: {{ assignment.created_at|date:"M d, Y" }}
+                                </small>
+                            </div>
+                        </div>
+                        
+                        {% if assignment.remarks %}
+                        <div class="mt-2">
+                            <small><strong>Remarks:</strong> {{ assignment.remarks }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-tasks" style="font-size: 4rem; color: #ddd; margin-bottom: 20px;"></i>
+                <h4>No Assignments Found</h4>
+                <p class="text-muted">No assignments have been recorded yet. Add some grades to see assignment tracking.</p>
+                <a href="{% url 'sms:add_grade' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add First Assignment
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function contactStudent(email) {
+    window.location.href = `mailto:${email}?subject=Assignment Follow-up - Student Management System`;
+}
+</script>
+{% endblock %}

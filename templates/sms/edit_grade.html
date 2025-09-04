@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Grade - {{ grade.student.user.get_full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #f8f9fa;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .grade-preview {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .grade-preview h4 {
+        margin-bottom: 10px;
+    }
+    
+    .grade-display {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    
+    .gpa-display {
+        font-size: 1.5rem;
+        opacity: 0.9;
+    }
+    
+    .current-grade {
+        background: #e9ecef;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-header">
+        <i class="fas fa-crown" style="color: #f39c12; font-size: 2rem; margin-bottom: 10px;"></i>
+        <h3>Admin Control Center</h3>
+        <p>Edit Grade</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li><a href="{% url 'sms:admin_dashboard' %}">
+            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+        </a></li>
+        <li><a href="{% url 'sms:manage_students' %}">
+            <i class="fas fa-users"></i> Manage Students
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-chart-line"></i> Course Analysis
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-trending-up"></i> Performance Trends
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-file-import"></i> Import CSV Data
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+        </a></li>
+        <li><a href="{% url 'sms:manage_grades' %}" class="active">
+            <i class="fas fa-user-check"></i> Manage Grades
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-cog"></i> Admin Panel
+        </a></li>
+    </ul>
+    
+    <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
+        <a href="{% url 'sms:logout' %}" style="color: #e74c3c; text-decoration: none;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <h1><i class="fas fa-edit"></i> Edit Grade</h1>
+        <div class="user-info">
+            <a href="{% url 'sms:manage_grades' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Grades
+            </a>
+        </div>
+    </div>
+    
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Edit Grade Form -->
+    <div class="form-container">
+        <div class="row">
+            <div class="col-md-8">
+                <h3><i class="fas fa-chart-bar"></i> Edit Grade Information</h3>
+                
+                <!-- Current Grade Info -->
+                <div class="current-grade">
+                    <h5><i class="fas fa-info-circle"></i> Current Grade Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Student:</strong> {{ grade.student.user.get_full_name }} ({{ grade.student.student_id }})</p>
+                            <p><strong>Course:</strong> {{ grade.course.subject.name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Current Grade:</strong> <span class="badge bg-primary">{{ grade.grade }}</span></p>
+                            <p><strong>Current GPA:</strong> {{ grade.gpa }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form method="post" id="editGradeForm">
+                    {% csrf_token %}
+                    
+                    <!-- Grade Details -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-primary"><i class="fas fa-star"></i> Update Grade Details</h5>
+                            <hr>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="marks_obtained" class="form-label">Marks Obtained *</label>
+                            <input type="number" class="form-control" id="marks_obtained" name="marks_obtained" 
+                                   min="0" max="{{ grade.course.max_marks }}" step="0.5" 
+                                   value="{{ grade.marks_obtained }}" required>
+                            <div class="form-text">Maximum marks: {{ grade.course.max_marks }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exam_date" class="form-label">Exam Date</label>
+                            <input type="date" class="form-control" id="exam_date" name="exam_date" 
+                                   value="{{ grade.exam_date|date:'Y-m-d' }}">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea class="form-control" id="remarks" name="remarks" rows="3" 
+                                      placeholder="Additional comments about the grade...">{{ grade.remarks|default:'' }}</textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Buttons -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <hr>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{% url 'sms:manage_grades' %}" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update Grade
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Grade Preview -->
+            <div class="col-md-4">
+                <div class="grade-preview">
+                    <h4>New Grade Preview</h4>
+                    <div class="grade-display" id="gradeDisplay">{{ grade.grade }}</div>
+                    <div class="gpa-display">GPA: <span id="gpaDisplay">{{ grade.gpa }}</span></div>
+                    <div class="mt-3">
+                        <small>Student: {{ grade.student.user.get_full_name }}</small><br>
+                        <small>Course: {{ grade.course.subject.name }}</small><br>
+                        <small>Marks: <span id="previewMarks">{{ grade.marks_obtained }}/{{ grade.course.max_marks }}</span></small>
+                    </div>
+                </div>
+                
+                <!-- Grade Scale Reference -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6><i class="fas fa-info-circle"></i> Grade Scale</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tr><td>A+</td><td>90-100</td><td>4.0</td></tr>
+                            <tr><td>A</td><td>80-89</td><td>3.7</td></tr>
+                            <tr><td>B+</td><td>70-79</td><td>3.3</td></tr>
+                            <tr><td>B</td><td>60-69</td><td>3.0</td></tr>
+                            <tr><td>C+</td><td>50-59</td><td>2.3</td></tr>
+                            <tr><td>C</td><td>40-49</td><td>2.0</td></tr>
+                            <tr><td>F</td><td>0-39</td><td>0.0</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const marksInput = document.getElementById('marks_obtained');
+    const gradeDisplay = document.getElementById('gradeDisplay');
+    const gpaDisplay = document.getElementById('gpaDisplay');
+    const previewMarks = document.getElementById('previewMarks');
+    const maxMarks = {{ grade.course.max_marks }};
+    
+    function calculateGrade(marks, maxMarks) {
+        const percentage = (marks / maxMarks) * 100;
+        
+        if (percentage >= 90) return { grade: 'A+', gpa: 4.0 };
+        else if (percentage >= 80) return { grade: 'A', gpa: 3.7 };
+        else if (percentage >= 70) return { grade: 'B+', gpa: 3.3 };
+        else if (percentage >= 60) return { grade: 'B', gpa: 3.0 };
+        else if (percentage >= 50) return { grade: 'C+', gpa: 2.3 };
+        else if (percentage >= 40) return { grade: 'C', gpa: 2.0 };
+        else return { grade: 'F', gpa: 0.0 };
+    }
+    
+    function updatePreview() {
+        const marks = parseFloat(marksInput.value) || 0;
+        const result = calculateGrade(marks, maxMarks);
+        
+        gradeDisplay.textContent = result.grade;
+        gpaDisplay.textContent = result.gpa;
+        previewMarks.textContent = `${marks}/${maxMarks}`;
+    }
+    
+    marksInput.addEventListener('input', updatePreview);
+});
+</script>
+{% endblock %}

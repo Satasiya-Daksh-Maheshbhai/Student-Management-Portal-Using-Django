@@ -1,0 +1,26 @@
+username,email,first_name,last_name,student_id,department_code,year,enrollment_date,phone
+tanisha.kavani,tanisha.kavani@university.edu,Tanisha,Kavani,tanisha,EE,4,2022-01-15,555-2103
+sarah.johnson,sarah.johnson@university.edu,Sarah,Johnson,CS2025100,CS,1,2025-01-15,555-2100
+alexander.rodriguez,alexander.rodriguez@university.edu,Alexander,Rodriguez,CS2025001,CS,1,2025-01-15,555-1001
+isabella.thompson,isabella.thompson@university.edu,Isabella,Thompson,CS2025002,CS,1,2025-01-15,555-1002
+william.chen,william.chen@university.edu,William,Chen,CS2025003,CS,2,2024-01-15,555-1003
+sophia.patel,sophia.patel@university.edu,Sophia,Patel,CS2025004,CS,2,2024-01-15,555-    1004
+james.kim,james.kim@university.edu,James,Kim,CS2025005,CS,3,2023-01-15,555-1005
+emma.johnson,emma.johnson@university.edu,Emma,Johnson,CS2025006,CS,3,2023-01-15,555-1006
+benjamin.williams,benjamin.williams@university.edu,Benjamin,Williams,CS2025007,CS,4,2022-01-15,555-1007
+olivia.brown,olivia.brown@university.edu,Olivia,Brown,CS2025008,CS,4,2022-01-15,555-1008
+lucas.davis,lucas.davis@university.edu,Lucas,Davis,EE2025009,EE,1,2025-01-15,555-1009
+ava.miller,ava.miller@university.edu,Ava,Miller,EE2025010,EE,1,2025-01-15,555-1010
+mason.wilson,mason.wilson@university.edu,Mason,Wilson,EE2025011,EE,2,2024-01-15,555-1011
+charlotte.moore,charlotte.moore@university.edu,Charlotte,Moore,EE2025012,EE,2,2024-01-15,555-1012
+ethan.taylor,ethan.taylor@university.edu,Ethan,Taylor,EE2025013,EE,3,2023-01-15,555-1013
+amelia.anderson,amelia.anderson@university.edu,Amelia,Anderson,EE2025014,EE,3,2023-01-15,555-1014
+logan.thomas,logan.thomas@university.edu,Logan,Thomas,EE2025015,EE,4,2022-01-15,555-1015
+nirali.agja,nirali.agja@university.edu,Nirali,Agja,EE2025016,EE,4,2022-01-15,555-1016
+sarah.johnson,sarah.johnson@university.edu,Sarah,Johnson,CS2025100,CS,1,2025-01-15,555-2100
+mike.davis,mike.davis@university.edu,Mike,Davis,EE2025101,EE,2,2024-01-15,555-2101
+anna.wilson,anna.wilson@university.edu,Anna,Wilson,ME2025102,ME,3,2023-01-15,555-2102
+mike.davis,mike.davis@university.edu,Mike,Davis,EE2025101,EE,2,2024-01-15,555-2101
+anna.wilson,anna.wilson@university.edu,Anna,Wilson,ME2025102,ME,3,2023-01-15,555-2102
+amitabh.bachhan,amitabh.bachhan@university.edu,amitabh,bachhan,ME20251023,ME,3,2023-01-15,555-2102
+amitabh2.bachhan2,amitabh2.bachhan2@university.edu,amitabh2,bachhan2,ME20251024,ME,4,2023-01-15,555-2102

@@ -1,0 +1,16 @@
+username,email,first_name,last_name,student_id,department_code,year,enrollment_date,phone
+serenity.cooper,serenity.cooper@university.edu,Serenity,Cooper,CS2025061,CS,1,2025-01-15,555-5001
+knox.richardson,knox.richardson@university.edu,Knox,Richardson,CS2025062,CS,1,2025-01-15,555-5002
+willow.cox,willow.cox@university.edu,Willow,Cox,CS2025063,CS,2,2024-01-15,555-5003
+phoenix.howard,phoenix.howard@university.edu,Phoenix,Howard,CS2025064,CS,2,2024-01-15,555-5004
+melody.ward,melody.ward@university.edu,Melody,Ward,CS2025065,CS,3,2023-01-15,555-5005
+atlas.torres,atlas.torres@university.edu,Atlas,Torres,CS2025066,CS,3,2023-01-15,555-5006
+juniper.peterson,juniper.peterson@university.edu,Juniper,Peterson,CS2025067,CS,4,2022-01-15,555-5007
+orion.gray,orion.gray@university.edu,Orion,Gray,CS2025068,CS,4,2022-01-15,555-5008
+evangeline.ramirez,evangeline.ramirez@university.edu,Evangeline,Ramirez,EE2025069,EE,1,2025-01-15,555-5009
+archer.james,archer.james@university.edu,Archer,James,EE2025070,EE,1,2025-01-15,555-5010
+iris.watson,iris.watson@university.edu,Iris,Watson,EE2025071,EE,2,2024-01-15,555-5011
+silas.brooks,silas.brooks@university.edu,Silas,Brooks,EE2025072,EE,2,2024-01-15,555-5012
+ophelia.kelly,ophelia.kelly@university.edu,Ophelia,Kelly,EE2025073,EE,3,2023-01-15,555-5013
+felix.sanders,felix.sanders@university.edu,Felix,Sanders,EE2025074,EE,3,2023-01-15,555-5014
+celeste.price,celeste.price@university.edu,Celeste,Price,EE2025075,EE,4,2022-01-15,555-5015

@@ -1,0 +1,55 @@
+student_id,subject,course,grade,semester,academic_year
+CS2024031,Mathematics,Calculus I,A,Spring,2024
+CS2024031,Computer Science,Programming Fundamentals,A+,Spring,2024
+CS2024031,Physics,Physics I,A-,Spring,2024
+CS2024032,Mathematics,Calculus I,F,Spring,2024
+CS2024032,Computer Science,Programming Fundamentals,D,Spring,2024
+CS2024032,Physics,Physics I,F,Spring,2024
+CS2024033,Mathematics,Calculus II,B+,Spring,2024
+CS2024033,Computer Science,Data Structures,A,Spring,2024
+CS2024033,Physics,Physics II,B,Spring,2024
+CS2024034,Mathematics,Calculus II,F,Spring,2024
+CS2024034,Computer Science,Data Structures,F,Spring,2024
+CS2024034,Physics,Physics II,F,Spring,2024
+CS2024035,Mathematics,Linear Algebra,A+,Spring,2024
+CS2024035,Computer Science,Algorithms,A,Spring,2024
+CS2024035,Physics,Modern Physics,A,Spring,2024
+EE2024038,Mathematics,Calculus I,C,Spring,2024
+EE2024038,Electrical Engineering,Circuit Analysis,F,Spring,2024
+EE2024038,Physics,Physics I,D,Spring,2024
+EE2024039,Mathematics,Calculus II,A,Spring,2024
+EE2024039,Electrical Engineering,Digital Logic,B+,Spring,2024
+EE2024039,Physics,Physics II,A-,Spring,2024
+EE2024040,Mathematics,Differential Equations,F,Spring,2024
+EE2024040,Electrical Engineering,Electronics,F,Spring,2024
+EE2024040,Physics,Modern Physics,F,Spring,2024
+ME2024041,Mathematics,Calculus I,B,Spring,2024
+ME2024041,Mechanical Engineering,Statics,A,Spring,2024
+ME2024041,Physics,Physics I,B+,Spring,2024
+ME2024042,Mathematics,Calculus II,F,Spring,2024
+ME2024042,Mechanical Engineering,Dynamics,D,Spring,2024
+ME2024042,Physics,Physics II,F,Spring,2024
+ME2024043,Mathematics,Linear Algebra,A+,Spring,2024
+ME2024043,Mechanical Engineering,Fluid Mechanics,A,Spring,2024
+ME2024043,Physics,Quantum Physics,A,Spring,2024
+CS2024044,Mathematics,Statistics,F,Spring,2024
+CS2024044,Computer Science,Database Systems,F,Spring,2024
+CS2024044,Computer Science,Web Development,F,Spring,2024
+CS2024045,Mathematics,Statistics,A,Spring,2024
+CS2024045,Computer Science,Database Systems,B+,Spring,2024
+CS2024045,Computer Science,Web Development,A-,Spring,2024
+EE2024046,Mathematics,Complex Analysis,F,Spring,2024
+EE2024046,Electrical Engineering,Signal Processing,F,Spring,2024
+EE2024046,Electrical Engineering,Power Systems,D,Spring,2024
+EE2024047,Mathematics,Complex Analysis,A,Spring,2024
+EE2024047,Electrical Engineering,Signal Processing,B+,Spring,2024
+EE2024047,Electrical Engineering,Power Systems,A-,Spring,2024
+ME2024048,Mathematics,Numerical Methods,F,Spring,2024
+ME2024048,Mechanical Engineering,Heat Transfer,F,Spring,2024
+ME2024048,Mechanical Engineering,Machine Design,F,Spring,2024
+ME2024049,Mathematics,Numerical Methods,A,Spring,2024
+ME2024049,Mechanical Engineering,Heat Transfer,B+,Spring,2024
+ME2024049,Mechanical Engineering,Machine Design,A-,Spring,2024
+CS2024050,Computer Science,Software Engineering,F,Spring,2024
+CS2024050,Computer Science,Computer Networks,D,Spring,2024
+CS2024050,Mathematics,Discrete Mathematics,F,Spring,2024

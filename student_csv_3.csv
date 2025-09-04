@@ -1,0 +1,16 @@
+username,email,first_name,last_name,student_id,department_code,year,enrollment_date,phone
+aria.lopez,aria.lopez@university.edu,Aria,Lopez,CS2025031,CS,1,2025-01-15,555-3001
+nathan.hill,nathan.hill@university.edu,Nathan,Hill,CS2025032,CS,1,2025-01-15,555-3002
+ellie.scott,ellie.scott@university.edu,Ellie,Scott,CS2025033,CS,2,2024-01-15,555-3003
+ian.green,ian.green@university.edu,Ian,Green,CS2025034,CS,2,2024-01-15,555-3004
+violet.adams,violet.adams@university.edu,Violet,Adams,CS2025035,CS,3,2023-01-15,555-3005
+easton.baker,easton.baker@university.edu,Easton,Baker,CS2025036,CS,3,2023-01-15,555-3006
+nova.gonzalez,nova.gonzalez@university.edu,Nova,Gonzalez,CS2025037,CS,4,2022-01-15,555-3007
+colton.nelson,colton.nelson@university.edu,Colton,Nelson,CS2025038,CS,4,2022-01-15,555-3008
+hazel.carter,hazel.carter@university.edu,Hazel,Carter,EE2025039,EE,1,2025-01-15,555-3009
+nolan.mitchell,nolan.mitchell@university.edu,Nolan,Mitchell,EE2025040,EE,1,2025-01-15,555-3010
+stella.perez,stella.perez@university.edu,Stella,Perez,EE2025041,EE,2,2024-01-15,555-3011
+ryder.roberts,ryder.roberts@university.edu,Ryder,Roberts,EE2025042,EE,2,2024-01-15,555-3012
+aurora.turner,aurora.turner@university.edu,Aurora,Turner,EE2025043,EE,3,2023-01-15,555-3013
+jaxon.phillips,jaxon.phillips@university.edu,Jaxon,Phillips,EE2025044,EE,3,2023-01-15,555-3014
+savannah.campbell,savannah.campbell@university.edu,Savannah,Campbell,EE2025045,EE,4,2022-01-15,555-3015

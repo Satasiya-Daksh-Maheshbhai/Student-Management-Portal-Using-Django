@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Student - {{ student.user.get_full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #f8f9fa;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-header">
+        <i class="fas fa-crown" style="color: #f39c12; font-size: 2rem; margin-bottom: 10px;"></i>
+        <h3>Admin Control Center</h3>
+        <p>Edit Student</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li><a href="{% url 'sms:admin_dashboard' %}">
+            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+        </a></li>
+        <li><a href="{% url 'sms:manage_students' %}" class="active">
+            <i class="fas fa-users"></i> Manage Students
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-chart-line"></i> Course Analysis
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-trending-up"></i> Performance Trends
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-file-import"></i> Import CSV Data
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+        </a></li>
+        <li><a href="{% url 'sms:manage_grades' %}">
+            <i class="fas fa-user-check"></i> Manage Grades
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-cog"></i> Admin Panel
+        </a></li>
+    </ul>
+    
+    <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
+        <a href="{% url 'sms:logout' %}" style="color: #e74c3c; text-decoration: none;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <h1><i class="fas fa-user-edit"></i> Edit Student - {{ student.student_id }}</h1>
+        <div class="user-info">
+            <a href="{% url 'sms:manage_students' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Students
+            </a>
+        </div>
+    </div>
+    
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Edit Student Form -->
+    <div class="form-container">
+        <h3><i class="fas fa-user-graduate"></i> Edit Student Information</h3>
+        
+        <form method="post" id="editStudentForm">
+            {% csrf_token %}
+            
+            <!-- Personal Information -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h5 class="text-primary"><i class="fas fa-user"></i> Personal Information</h5>
+                    <hr>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="first_name" class="form-label">First Name *</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" value="{{ student.user.first_name }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="last_name" class="form-label">Last Name *</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ student.user.last_name }}" required>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email Address *</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ student.user.email }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="{{ student.user.phone|default:'' }}">
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="date_of_birth" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ student.date_of_birth|date:'Y-m-d' }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea class="form-control" id="address" name="address" rows="2">{{ student.user.address|default:'' }}</textarea>
+                </div>
+            </div>
+            
+            <!-- Academic Information -->
+            <div class="row mb-4 mt-4">
+                <div class="col-12">
+                    <h5 class="text-primary"><i class="fas fa-graduation-cap"></i> Academic Information</h5>
+                    <hr>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="student_id" class="form-label">Student ID *</label>
+                    <input type="text" class="form-control" id="student_id" name="student_id" value="{{ student.student_id }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="department" class="form-label">Department *</label>
+                    <select class="form-select" id="department" name="department" required>
+                        <option value="">Select Department</option>
+                        {% for dept in departments %}
+                            <option value="{{ dept.id }}" {% if dept.id == student.department.id %}selected{% endif %}>{{ dept.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="year" class="form-label">Academic Year *</label>
+                    <select class="form-select" id="year" name="year" required>
+                        <option value="">Select Year</option>
+                        <option value="1" {% if student.year == '1' %}selected{% endif %}>First Year</option>
+                        <option value="2" {% if student.year == '2' %}selected{% endif %}>Second Year</option>
+                        <option value="3" {% if student.year == '3' %}selected{% endif %}>Third Year</option>
+                        <option value="4" {% if student.year == '4' %}selected{% endif %}>Fourth Year</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="enrollment_date" class="form-label">Enrollment Date *</label>
+                    <input type="date" class="form-control" id="enrollment_date" name="enrollment_date" value="{{ student.enrollment_date|date:'Y-m-d' }}" required>
+                </div>
+            </div>
+            
+            <!-- Status -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if student.is_active %}checked{% endif %}>
+                        <label class="form-check-label" for="is_active">
+                            Student is Active
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Login Credentials -->
+            <div class="row mb-4 mt-4">
+                <div class="col-12">
+                    <h5 class="text-primary"><i class="fas fa-key"></i> Login Credentials</h5>
+                    <hr>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="username" class="form-label">Username *</label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{ student.user.username }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="password" name="password" value="student123" readonly>
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-outline-warning" type="button" id="resetPassword">
+                            <i class="fas fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    <div class="form-text">
+                        <small class="text-info">
+                            <i class="fas fa-info-circle"></i>
+                            Current password: <strong>student123</strong> (Default for all students)
+                        </small>
+                        <br>
+                        <small class="text-muted">
+                            Students can login with: <strong>{{ student.user.username }}</strong> / <strong>student123</strong>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Parent/Guardian Information -->
+            <div class="row mb-4 mt-4">
+                <div class="col-12">
+                    <h5 class="text-primary"><i class="fas fa-users"></i> Parent/Guardian Information</h5>
+                    <hr>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="parent_name" class="form-label">Parent/Guardian Name</label>
+                    <input type="text" class="form-control" id="parent_name" name="parent_name" value="{{ student.parent_name|default:'' }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="parent_phone" class="form-label">Parent/Guardian Phone</label>
+                    <input type="tel" class="form-control" id="parent_phone" name="parent_phone" value="{{ student.parent_phone|default:'' }}">
+                </div>
+            </div>
+            
+            <!-- Submit Buttons -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <hr>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'sms:manage_students' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Student
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('password');
+    const toggleButton = document.getElementById('togglePassword');
+    const resetButton = document.getElementById('resetPassword');
+
+    // Toggle password visibility
+    toggleButton.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        const icon = this.querySelector('i');
+        if (type === 'password') {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        } else {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    });
+
+    // Reset password to default
+    resetButton.addEventListener('click', function() {
+        if (confirm('Reset password to default "student123"?')) {
+            passwordInput.value = 'student123';
+            passwordInput.removeAttribute('readonly');
+            passwordInput.focus();
+
+            // Show success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show mt-2';
+            alertDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i> Password reset to default: <strong>student123</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            passwordInput.parentNode.parentNode.appendChild(alertDiv);
+
+            // Auto-hide alert after 3 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
+    });
+
+    // Allow editing password
+    passwordInput.addEventListener('click', function() {
+        this.removeAttribute('readonly');
+        this.select();
+    });
+
+    // Form validation
+    const form = document.getElementById('editStudentForm');
+    form.addEventListener('submit', function(e) {
+        const password = passwordInput.value;
+
+        if (password && password.length < 3) {
+            e.preventDefault();
+            alert('Password must be at least 3 characters long.');
+            return false;
+        }
+
+        return true;
+    });
+});
+</script>
+{% endblock %}

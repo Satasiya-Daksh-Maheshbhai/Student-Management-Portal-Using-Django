@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Data Export - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #f8f9fa;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .export-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .export-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .export-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        color: var(--icon-color);
+    }
+    
+    .export-students { --icon-color: #3498db; }
+    .export-grades { --icon-color: #e74c3c; }
+    .export-performance { --icon-color: #27ae60; }
+    
+    .export-btn {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        border-radius: 25px;
+        border: none;
+        color: white;
+        background: linear-gradient(135deg, var(--icon-color) 0%, var(--icon-color) 100%);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .export-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .feature-list {
+        text-align: left;
+        margin: 20px 0;
+    }
+    
+    .feature-list li {
+        margin: 8px 0;
+        color: #666;
+    }
+    
+    .feature-list i {
+        color: var(--icon-color);
+        margin-right: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-header">
+        <i class="fas fa-crown" style="color: #f39c12; font-size: 2rem; margin-bottom: 10px;"></i>
+        <h3>Admin Control Center</h3>
+        <p>Data Export</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li><a href="{% url 'sms:admin_dashboard' %}">
+            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+        </a></li>
+        <li><a href="{% url 'sms:manage_students' %}">
+            <i class="fas fa-users"></i> Manage Students
+        </a></li>
+        <li><a href="{% url 'sms:course_analysis' %}">
+            <i class="fas fa-chart-line"></i> Course Analysis
+        </a></li>
+        <li><a href="{% url 'sms:performance_trends' %}">
+            <i class="fas fa-chart-area"></i> Performance Trends
+        </a></li>
+        <li><a href="{% url 'sms:import_csv_data' %}">
+            <i class="fas fa-file-import"></i> Import CSV Data
+        </a></li>
+        <li><a href="{% url 'sms:at_risk_students' %}">
+            <i class="fas fa-exclamation-triangle"></i> At-Risk Students
+        </a></li>
+        <li><a href="{% url 'sms:manage_grades' %}">
+            <i class="fas fa-user-check"></i> Manage Grades
+        </a></li>
+        <li><a href="{% url 'sms:admin_panel' %}">
+            <i class="fas fa-cog"></i> Admin Panel
+        </a></li>
+    </ul>
+    
+    <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
+        <a href="{% url 'sms:logout' %}" style="color: #e74c3c; text-decoration: none;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <h1><i class="fas fa-download"></i> Data Export Center</h1>
+        <div class="user-info">
+            <span>Export data to Excel/CSV format</span>
+        </div>
+    </div>
+    
+    <!-- Export Options -->
+    <div class="form-container">
+        <div class="row">
+            <!-- Students Export -->
+            <div class="col-md-4">
+                <div class="export-card export-students">
+                    <div class="export-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>Student Data Export</h4>
+                    <p class="text-muted">Export complete student information including personal details, enrollment data, and contact information.</p>
+                    
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Student ID and Names</li>
+                        <li><i class="fas fa-check"></i> Contact Information</li>
+                        <li><i class="fas fa-check"></i> Department and Year</li>
+                        <li><i class="fas fa-check"></i> Enrollment Status</li>
+                        <li><i class="fas fa-check"></i> Parent/Guardian Details</li>
+                    </ul>
+                    
+                    <a href="{% url 'sms:data_export' %}?type=students" class="export-btn">
+                        <i class="fas fa-download"></i> Export Students CSV
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Grades Export -->
+            <div class="col-md-4">
+                <div class="export-card export-grades">
+                    <div class="export-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h4>Grades Data Export</h4>
+                    <p class="text-muted">Export all academic records including grades, GPA, course information, and assessment details.</p>
+                    
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Student Grades and GPA</li>
+                        <li><i class="fas fa-check"></i> Course and Subject Details</li>
+                        <li><i class="fas fa-check"></i> Marks and Percentages</li>
+                        <li><i class="fas fa-check"></i> Exam Dates</li>
+                        <li><i class="fas fa-check"></i> Grade Distribution</li>
+                    </ul>
+                    
+                    <a href="{% url 'sms:data_export' %}?type=grades" class="export-btn">
+                        <i class="fas fa-download"></i> Export Grades CSV
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Performance Analysis Export -->
+            <div class="col-md-4">
+                <div class="export-card export-performance">
+                    <div class="export-icon">
+                        <i class="fas fa-analytics"></i>
+                    </div>
+                    <h4>Performance Analysis Export</h4>
+                    <p class="text-muted">Export comprehensive performance analysis including risk assessment, trends, and statistical insights.</p>
+                    
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Average GPA Analysis</li>
+                        <li><i class="fas fa-check"></i> Risk Level Assessment</li>
+                        <li><i class="fas fa-check"></i> Performance Trends</li>
+                        <li><i class="fas fa-check"></i> Failing Grade Counts</li>
+                        <li><i class="fas fa-check"></i> Department Comparison</li>
+                    </ul>
+                    
+                    <a href="{% url 'sms:data_export' %}?type=performance" class="export-btn">
+                        <i class="fas fa-download"></i> Export Analysis CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Export Instructions -->
+    <div class="form-container">
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle"></i> Export Instructions</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>File Format:</h6>
+                    <ul>
+                        <li>All exports are in CSV (Comma Separated Values) format</li>
+                        <li>Compatible with Excel, Google Sheets, and other spreadsheet applications</li>
+                        <li>UTF-8 encoding for international character support</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Usage Tips:</h6>
+                    <ul>
+                        <li>Open CSV files in Excel for advanced analysis</li>
+                        <li>Use filters and pivot tables for data insights</li>
+                        <li>Regular exports help maintain data backups</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="form-container">
+        <h3><i class="fas fa-chart-pie"></i> Export Statistics</h3>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #3498db;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">{{ total_students|default:0 }}</div>
+                    <div class="stat-label">Students Available</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #e74c3c;">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="stat-number">{{ total_grades|default:0 }}</div>
+                    <div class="stat-label">Grades Available</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #f39c12;">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="stat-number">{{ total_departments|default:0 }}</div>
+                    <div class="stat-label">Departments</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #27ae60;">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-number">{{ total_courses|default:0 }}</div>
+                    <div class="stat-label">Courses</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click tracking for export buttons
+    const exportButtons = document.querySelectorAll('.export-btn');
+    exportButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const exportType = this.href.split('type=')[1];
+            console.log(`Exporting ${exportType} data...`);
+            
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing Export...';
+            
+            // Reset button after a delay (in case of slow download)
+            setTimeout(() => {
+                this.innerHTML = originalText;
+            }, 3000);
+        });
+    });
+});
+</script>
+{% endblock %}
